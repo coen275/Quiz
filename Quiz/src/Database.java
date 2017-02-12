@@ -56,4 +56,35 @@ public class Database {
 		}
 		return result;
 	}
+
+	public static String getUserType(String username) {
+		String type = null;
+		try{
+			Connection c = instance.createConnection();
+			Statement stmt = c.createStatement();
+			ResultSet rs = stmt.executeQuery(String.format("SELECT Type FROM users WHERE Username = '%s';", username));
+			if (rs.next()) {
+				type = rs.getString("Type");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return type;
+	}
+
+	public static void createAccount(String username, String password, String type) {
+		try{
+			Connection c = instance.createConnection();
+			String sql = "INSERT INTO users (Username, Password, Type) "
+						 + "VALUES (?, ?, ?)";
+			PreparedStatement preparedStatement = c.prepareStatement(sql);
+			preparedStatement.setString(1, username);
+			preparedStatement.setString(2, password);
+			preparedStatement.setString(3, type);
+			preparedStatement.executeUpdate(); 
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+	}
 }
