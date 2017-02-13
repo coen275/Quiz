@@ -1,5 +1,7 @@
 
 import java.sql.Connection;
+import java.util.HashMap;
+import java.util.List;
 import java.sql.*;
 
 public class Database {
@@ -87,4 +89,25 @@ public class Database {
 		}
 		
 	}
+
+	public static boolean addCourse(String username, String courseName, String accessCode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public static void createCourse(String username, String courseName, String accessCode) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public static List<HashMap<String, String>> loadCourse(String username) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static void deleteCourse(String username, String courseName) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

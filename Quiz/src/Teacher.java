@@ -6,4 +6,18 @@ public class Teacher extends User {
 		// TODO Auto-generated constructor stub
 	}
 
+	@Override
+	public void addCourse(String courseName, String accessCode) {
+		if (isCourseExist(courseName)) {
+			System.out.println("Course: " + courseName + " exists!");
+		} else {
+			if (isValidCode(accessCode)) {
+				Database.createCourse(getUsername(), courseName, accessCode);
+			} else {
+				System.out.println("Access code should be 4 letters or digits only");
+			}
+		}
+		
+	}
+
 }
