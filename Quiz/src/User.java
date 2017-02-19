@@ -13,7 +13,7 @@ public abstract class User {
 		this.password = password;
 		this.type = type;
 		courses = new ArrayList<>(); 
-		loadCourse();
+		//loadCourse();
 	}
 	
 	public String getUsername() {

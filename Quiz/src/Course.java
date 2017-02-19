@@ -1,7 +1,11 @@
+import java.util.ArrayList;
+import java.util.List;
 
 public class Course {
 	String name;
 	String accessCode;
+	Quiz tempQuiz;
+	List<Quiz> quizs = new ArrayList<Quiz>();
 	
 	public Course(String name, String accessCode) {
 		this.name = name;
@@ -22,5 +26,13 @@ public class Course {
 	
 	public String getAccessCode() {
 		return accessCode;
+	}
+	
+	public void createQuiz() {
+		tempQuiz = new Quiz();
+	}
+	
+	public void editQuiz(String name, long accessTime, long quizTime, List<String> answers, List<Question> questions) {
+		
 	}
 }
