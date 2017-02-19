@@ -45,6 +45,7 @@ public class Login extends JPanel {
 		btnLogin.setBounds(244, 170, 117, 29);
 		add(btnLogin);
 
+
 	}
 
 }
