@@ -13,7 +13,9 @@ public abstract class User {
 		this.password = password;
 		this.type = type;
 		courses = new ArrayList<>(); 
-		loadCourse();
+		
+		//Commented out to prevent NullPointerException
+		//loadCourse();
 	}
 	
 	public String getUsername() {

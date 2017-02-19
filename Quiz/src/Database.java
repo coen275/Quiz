@@ -8,7 +8,7 @@ public class Database {
 
 	private static Database instance = new Database();
 	
-	private static final String URL = "jdbc:mysql://45.55.27.137:3306/quiz_system";
+	private static final String URL = "jdbc:mysql://45.55.27.137:3306/quiz_system?useSSL=false";
 	private static final String USER = "coen_sql";
 	private static final String PASSWORD = "coenSqlSecret24";
 	private static final String DRIVER_CLASS = "com.mysql.jdbc.Driver";
