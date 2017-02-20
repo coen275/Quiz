@@ -11,8 +11,9 @@ public class Student extends User {
 		if (isCourseExist(courseName)) {
 			System.out.println("Course: " + courseName + " exists!");
 		} else {
-			if (isValidCode(accessCode) && Database.addCourse(getUsername(), courseName, accessCode)) {
+			if (isValidCode(accessCode)) {
 				courses.add(new Course(courseName, accessCode));
+				Database.addCourse(getUsername(), courseName, accessCode);
 			} else {
 				System.out.println("Course name or access code is wrong!");
 			}

@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public abstract class User {
@@ -44,10 +43,14 @@ public abstract class User {
 	}
 	
 	public void loadCourse() {
-		List<HashMap<String, String>> list = Database.loadCourse(getUsername());
-		for (HashMap<String, String> map : list) {
-			courses.add(new Course(map.get("name"), map.get("accesscode")));
+		List<Course> list = Database.loadCourse(getUsername());
+		for (Course c : list) {
+			courses.add(c);
 		}
+	}
+	
+	public List<Course> getCourse() {
+		return courses;
 	}
 	
 	public void deleteCourse(String courseName) {

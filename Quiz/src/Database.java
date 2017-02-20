@@ -90,9 +90,8 @@ public class Database {
 		
 	}
 
-	public static boolean addCourse(String username, String courseName, String accessCode) {
+	public static void addCourse(String username, String courseName, String accessCode) {
 		// TODO Auto-generated method stub
-		return false;
 	}
 
 	public static void createCourse(String username, String courseName, String accessCode) {
@@ -100,12 +99,27 @@ public class Database {
 		
 	}
 
-	public static List<HashMap<String, String>> loadCourse(String username) {
+	public static List<Course> loadCourse(String username) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public static void deleteCourse(String username, String courseName) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * Delete quiz
+	 * @param courseName
+	 * @param quizName
+	 */
+	public static void deleteQuiz(String courseName, String quizName) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public static void addQuiz(Quiz tempQuiz) {
 		// TODO Auto-generated method stub
 		
 	}

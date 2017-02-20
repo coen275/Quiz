@@ -2,13 +2,14 @@ import java.util.Map;
 
 public class Question {
 	private String quesiton;
-	private Map<String, String> choices;
+	private Map<String, String> choices; //MAP<option, details> e.g ("A", "interface."),("B", "class.")
 	private String answer;
 	private boolean isCorrect;
 	
-	public Question(String question, Map<String, String> choices) {
+	public Question(String question, Map<String, String> choices, String answer) {
 		this.quesiton = question;
 		this.choices = choices;
+		this.answer = answer;
 		isCorrect = false;
 	}
 	
