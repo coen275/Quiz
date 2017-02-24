@@ -13,7 +13,7 @@ public class App extends JFrame {
 	private JToolBar toolbar;
 	private JLabel userNameLabel;
 	private JButton signoutButton;
-	
+
 	private JPanel currentPanel;
 	
 	private static final String NOT_SIGNED_IN_MSG = "You are not logged in.";
@@ -43,9 +43,8 @@ public class App extends JFrame {
 		toolbar.add(userNameLabel);
 		toolbar.addSeparator();
 		toolbar.add(signoutButton);
-		toolbar.setBackground(Color.RED);
 		
-		currentPanel = new JPanel();
+		currentPanel = new Login(this);
 		
 		//Add GUI Components
 		container.add(toolbar, BorderLayout.PAGE_START);
@@ -61,11 +60,12 @@ public class App extends JFrame {
 		currentUser = user;
 		userNameLabel.setText(user != null ? user.username : NOT_SIGNED_IN_MSG);
 		signoutButton.setEnabled(user != null);
+		
 		revalidate();
 	}
 	
 	public void logout() {
-		setActiveUser(null);		
+		setActiveUser(null);
 	}
 	
 	public void setPanel(JPanel panel){
@@ -84,25 +84,6 @@ public class App extends JFrame {
 		} else {
 			System.out.println("Password is not correct");
 		}	
-	}
-	
-	/*
-	 * I think this function should be in the LoginUI class so that it can properly 
-	 * display errors if the password is wrong.
-	 */
-	public void login(String username, String password) {
-		if(Database.isValidUser(username, password)) {
-			String type = Database.getUserType(username);
-			if (type.equals("student")) {
-				currentUser = new Student(username, password, type);
-			} else if (type.equals("teacher")) {
-				currentUser = new Teacher(username, password, type);
-			} else {
-				throw new IllegalArgumentException("Invaid type");
-			}
-		} else {
-			System.out.println("Username or Password is invalid.");
-		}
 	}
 	
 	//Temporary

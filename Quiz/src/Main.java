@@ -11,13 +11,12 @@ public class Main {
 		
 		App app = new App();
 //		testSignUp(app);
-		app.setActiveUser(new Student("Paul", "1234", "student"));
 		//testLogin(app, "Paul", "1234");
 		//testLogin(app, "Liang", "1111");
 	}
 	
 	public static void testLogin(App app, String username, String password) {
-		app.login(username, password);
+		//app.login(username, password);
 		app.printCurrentUserInfo();
 		app.logout();
 	}
