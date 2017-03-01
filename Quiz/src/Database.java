@@ -1,4 +1,3 @@
-package OnlineQuiz;
 
 
 import java.sql.Connection;
