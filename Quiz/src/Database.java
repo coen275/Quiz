@@ -357,7 +357,7 @@ public class Database {
 			
 			String sql2 = "DELETE FROM quiz " 
 	                   + "WHERE quizname = ?"
-	                   + "AND courseID = (SELECT coursename FROM course WHERE coursename = ?)";
+	                   + "AND courseID = (SELECT courseID FROM course WHERE coursename = ?)";
 			
 			preparedStatement = c.prepareStatement(sql2);
 			preparedStatement.setString(1, quizName);
