@@ -8,10 +8,10 @@ public class Course {
 	Quiz tempQuiz;
 	List<Quiz> quizs;
 	
-	public Course(String name, String accessCode) {
+	public Course(String name, String accessCode, List<Quiz> quiz) {
 		this.name = name;
 		this.accessCode = accessCode;
-		quizs = new ArrayList<Quiz>();
+		this.quizs = quiz;
 	}
 	
 	public void setCourseName(String name) {
@@ -45,13 +45,13 @@ public class Course {
 	 * @param answers
 	 * @param questions
 	 */
-	public void editQuiz(String name, long accessTime, long quizTime, List<String> answers, List<Question> questions) {
+	public void addQuiz(String name, long accessTime, long quizTime, List<Question> questions, String courseName) {
 		tempQuiz.setName(name);
 		tempQuiz.setAccessTime(accessTime);
 		tempQuiz.setQuizTime(quizTime);
 		tempQuiz.setQuestions(questions);
 		quizs.add(tempQuiz);
-//		Database.addQuiz(tempQuiz);
+		Database.addQuiz(courseName, tempQuiz);
 		tempQuiz = null;
 	}
 	
@@ -62,7 +62,7 @@ public class Course {
 		tempQuiz = null;
 	}
 	
-	public List<Quiz> viewQuizs() {
+	public List<Quiz> getQuizs() {
 		return quizs;
 	}
 	
@@ -75,4 +75,7 @@ public class Course {
 		}
 	}
 	
+	public void printCourseInfo(){
+		System.out.println("CourseName: " + name + ", AccessCode: " + accessCode);
+	}
 }

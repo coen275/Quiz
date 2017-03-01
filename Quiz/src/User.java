@@ -14,7 +14,7 @@ public abstract class User {
 		courses = new ArrayList<>(); 
 		
 		//Commented out to prevent NullPointerException
-		//loadCourse();
+		loadCourse();
 	}
 	
 	public String getUsername() {
@@ -43,16 +43,17 @@ public abstract class User {
 	}
 	
 	public void loadCourse() {
-//		List<Course> list = Database.loadCourse(getUsername());
-//		for (Course c : list) {
-//			courses.add(c);
-//		}
+		List<Course> list = Database.loadCourses(getUsername());
+		for (Course c : list) {
+			courses.add(c);
+		}
 	}
 	
 	public List<Course> getCourse() {
 		return courses;
 	}
 	
+
 	public void deleteCourse(String courseName) {
 		for (Course course : courses) {
 			if (course.getCourseName().equals(courseName)) {
@@ -74,6 +75,10 @@ public abstract class User {
 			isValid = false;
 		}
 		return isValid;
+	}
+	
+	public void printUserInfo(){
+		System.out.println("Username: " + username + ", Password: " + password + ", Type: " + type);
 	}
 	
 	public abstract void addCourse(String courseName, String accessCode);

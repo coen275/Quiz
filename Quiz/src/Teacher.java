@@ -13,7 +13,7 @@ public class Teacher extends User {
 			System.out.println("Course: " + courseName + " exists!");
 		} else {
 			if (!Database.isCourseExist(courseName) && isValidCode(accessCode)) {
-				Database.createCourse(courseName, accessCode);
+				Database.createCourse(username, courseName, accessCode);
 			} else {
 				System.out.println("Access code should be 4 letters or digits only");
 			}

@@ -62,6 +62,8 @@ public class App extends JFrame {
 		signoutButton.setEnabled(user != null);
 		
 		revalidate();
+		//test loadcourse after login
+		testLoadCourseInUserClass(currentUser);
 	}
 	
 	public void logout() {
@@ -91,5 +93,20 @@ public class App extends JFrame {
 		System.out.println("Username: " + currentUser.getUsername());
 		System.out.println("Password: " + currentUser.getPassword());
 		System.out.println("Type: " + currentUser.getType());
+	}
+	
+	/*
+	 * Test loadcourse after login
+	 */
+	public void testLoadCourseInUserClass(User user){
+		for (Course c : user.getCourse()) {
+			c.printCourseInfo();
+			for (Quiz q : c.getQuizs()) {
+				q.printQuizInfo();
+				for (Question question: q.getQuestions()) {
+					question.printQuestionInfo();
+				}
+			}
+		}
 	}
 }

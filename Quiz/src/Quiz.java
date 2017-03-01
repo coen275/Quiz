@@ -75,7 +75,7 @@ public class Quiz {
 	 */
 	public void printAccessTime() {
 		Date time=new Date((long)accessTime * 1000);
-		System.out.println(time);
+		System.out.println("AccessTime: " + time);
 	}
 	
 	/**
@@ -92,6 +92,14 @@ public class Quiz {
 	    sb.append(" Minutes ");
 	    sb.append(seconds);
 	    sb.append(" Seconds");
-	    System.out.println(sb.toString());
+	    System.out.println("QuizTime:" + sb.toString());
 	}
+	
+	public void printQuizInfo(){
+		System.out.println("QuizName: " + name);
+		printAccessTime();
+		printQuizTime();
+	}
+	
+	
 }

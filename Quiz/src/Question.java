@@ -53,4 +53,12 @@ public class Question {
 	public String getAnswer() {
 		return answer;
 	}
+	
+	public void printQuestionInfo(){
+		System.out.println("Question Text: " + getQuestion());
+		for (String choice: getChoices().keySet()){
+			System.out.println("Choice " + choice + ": " + getChoices().get(choice));
+		}
+		System.out.println("Answer: " + getAnswer());
+	}
 }

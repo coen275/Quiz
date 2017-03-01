@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 
 public class Student extends User {
 
@@ -12,7 +13,7 @@ public class Student extends User {
 			System.out.println("Course: " + courseName + " exists!");
 		} else {
 			if (isValidCode(accessCode)) {
-				courses.add(new Course(courseName, accessCode));
+				courses.add(new Course(courseName, accessCode, new ArrayList<Quiz>()));
 				Database.addCourse(getUsername(), courseName, accessCode);
 			} else {
 				System.out.println("Course name or access code is wrong!");

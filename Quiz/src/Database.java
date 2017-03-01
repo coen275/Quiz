@@ -181,7 +181,7 @@ public class Database {
 	 * @param coursename
 	 * @param accesscode
 	 */
-	public static void createCourse(String courseName, String accessCode) {
+	public static void createCourse(String username, String courseName, String accessCode) {
 		try{
 			Connection c = instance.createConnection();		
 			String sql = "INSERT INTO Courses (CourseName, AccessCode) "
@@ -193,6 +193,7 @@ public class Database {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+		addCourse(username, courseName, accessCode);
 	}
 	
 	public static Boolean isCourseExist(String courseName) {
@@ -263,110 +264,146 @@ public class Database {
 		}
 	}
 	
+
+	/**
+	 * Get the list of Courses
+	 * @param username
+	 * @return
+	 */
+	public static List<Course> loadCourses(String username) {
+		List <Course> courses = new ArrayList<>();
+		try{
+			Connection c = instance.createConnection();
+			Statement stmt = c.createStatement();			
+			ResultSet rs = stmt.executeQuery(String.format("SELECT * "
+														 + "FROM CourseEnrollment "
+														 + "INNER JOIN Users ON Users.UserID = CourseEnrollment.UserID "
+														 + "INNER JOIN Courses ON Courses.CourseID = CourseEnrollment.CourseID "
+														 + "WHERE Username = '%s';", username));
+			while (rs.next()) {
+			 	Course course = new Course(rs.getString("CourseName"),
+			 			 				   rs.getString("AccessCode"), 
+			 			 				   loadQuizs(rs.getInt("UserID"), rs.getString("type"), rs.getInt("CourseID")));
+				courses.add(course);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return courses; 			
+	}
 	
-/* Function to Return the Questions and answer details for the given quiz to getQuiz() function
- 	*  @param quizID
-*/
+	/**
+	 * Get list of Quizs
+	 * @param type
+	 * @param CourseID
+	 * @return
+	 */
+	public static List<Quiz> loadQuizs(int userID, String type, int courseID) {
+		List<Quiz> quizs = new ArrayList<>();
+		try{
+			Connection c = instance.createConnection();
+			Statement stmt = c.createStatement();			
+			ResultSet rs = stmt.executeQuery(String.format("SELECT * FROM Quizs WHERE CourseID = '%d';", courseID));
+			while (rs.next()) {
+				Quiz quiz = new Quiz();
+				quiz.setAccessTime(rs.getLong("AccessTime"));
+				quiz.setName(rs.getString("QuizName"));
+				quiz.setQuizTime(rs.getLong("QuizTime"));
+//				System.out.println("QuizName: " + quiz.getName() + ", AccessTime: " + quiz.getAccessTime() + ", QuizTime: " + quiz.getQuizTime());
+				quiz.setQuestions(loadQuestions(userID, type, rs.getInt("QuizID")));
+				quizs.add(quiz);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return quizs;
+	}
 	
-//	public static List<Question> getQuestions(int quizID){
-//		List<Question> questions = new ArrayList<>();
-//		questions = null;
-//		try{
-//			Connection c = instance.createConnection();
-//			Statement stmt = c.createStatement();
-//		
-//		 ResultSet rs = stmt.executeQuery(String.format("SELECT qs.quizID, question, answer FROM QUESTIONS qs, ANSWERS as "
-//				 + "WHERE quizID = '%s' " ,quizID
-//				 + "AND qs.questionID = as.questionID"
-//				 + "order by qs.quizID "));
-//		 if (rs.next()){
-//			 Question question = new Question();
-//			 question.setQuestion(rs.getString("question"));
-//			 question.setAnswer(rs.getString("answer"));
-//			 questions.add(question);
-//		 }
-//	}catch(Exception e){
-//		e.printStackTrace();
-//		}
-//		
-//	return questions;
-//	}
+	public static List<Question> loadQuestions(int userID, String type, int quizID){
+		List<Question> questions = new ArrayList<>();
+		String answer;
+		try{
+			Connection c = instance.createConnection();
+			Statement stmt = c.createStatement();			
+			ResultSet rs = stmt.executeQuery(String.format("SELECT * FROM Questions WHERE QuizID = '%d';", quizID));
+			while (rs.next()) {
+				if(type.equals("teacher")) {
+					answer = getAnswer(rs.getInt("QuestionID"));
+				} else {
+					answer = getQuestionResult(rs.getInt("QuestionID"), quizID, userID);
+				}
+				Question question = new Question(rs.getString("QuestionText"), getChoices(rs.getInt("QuestionID")), answer);
+//				System.out.println("Question Text: " + question.getQuestion());
+//				for (String choice: question.getChoices().keySet()){
+//					System.out.println("Choice " + choice + ": " + question.getChoices().get(choice));
+//				}
+//				System.out.println("Answer: " + question.getAnswer());
+				questions.add(question);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return questions;
+	}
 	
+	public static Map<String, String> getChoices(int questionID) {
+		Map<String, String> choices = new HashMap<>();
+		try{
+			Connection c = instance.createConnection();
+			Statement stmt = c.createStatement();			
+			ResultSet rs = stmt.executeQuery(String.format("SELECT * FROM Choices WHERE QuestionID = '%d';", questionID));
+			if(rs.next()) {
+				choices.put("A", rs.getString("ChoiceA"));
+				choices.put("B", rs.getString("ChoiceB"));
+				choices.put("C", rs.getString("ChoiceC"));
+				choices.put("D", rs.getString("ChoiceD"));
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return choices;
+	}
 	
-/* Function to Return the quiz details (along with list of questions) to the loadCourse() function
- 	*  @param courseID
- */
-		
-//	public static List<Quiz> getQuiz(int courseID){
-//		List<Quiz> quizzes = new ArrayList<>();
-//		//quizzes = null;
-//		List<Question> listQuestion = new ArrayList<Question>();
-//		try{
-//			Connection c = instance.createConnection();
-//			Statement stmt = c.createStatement();
-//		
-//		 ResultSet rs = stmt.executeQuery(String.format("SELECT qz.quizID,qz.quizname,qz.accesstime,qz.quiztime" 
-//				 + "FROM QUIZ qz, COURSE cs"
-//				 + "WHERE qz.courseID = '%s' " ,courseID
-//				 + "AND cs.courseID = qz.courseID"));
-//		 if (rs.next()){
-//			 Quiz quiz = new Quiz();
-//			 quiz.setName(rs.getString("quizname"));
-//			 quiz.setAccessTime(rs.getLong("accesstime"));
-//			 quiz.setQuizTime(rs.getLong("quiztime"));
-//			 listQuestion = getQuestions(rs.getInt("quizID"));
-//			 quiz.setQuestions(listQuestion);
-//
-//			 quizzes.add(quiz);
-//		 }
-//		
-//		 
-//	}catch(Exception e){
-//		e.printStackTrace();
-//		}
-//		
-//	return quizzes;
-//	
-//	}	
+	public static String getQuestionResult(int questionID, int quizID, int userID) {
+		String answer = "";
+		try{
+			Connection c = instance.createConnection();
+			Statement stmt = c.createStatement();			
+			ResultSet rs = stmt.executeQuery(String.format("SELECT * "
+														 + "FROM QuestionResults "
+														 + "WHERE QuestionID = '%d' AND QuizID = '%d' AND UserID = '%d';", questionID, quizID, userID));
+			if(rs.next()) {
+				answer = rs.getString("ChosenAnswer");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return answer;
+	}
 	
-/* Function to Return the List of course details (along with quiz details) to the User
- 	* @param username
-*/
-	
-//	public static List<Course> loadCourse(String username) {
-//		List <Course> courses = new ArrayList<>();
-//		courses = null;
-//		List<Quiz> listQuiz = new ArrayList<Quiz>();
-//		try{
-//			Connection c = instance.createConnection();
-//			Statement stmt = c.createStatement();
-//				
-//		 ResultSet rs = stmt.executeQuery(String.format("SELECT us.username,cs.courseID,cs.coursename,"
-//		 		+ "FROM USERS us, COURSE cs, COURSE_ENROLLMENT ce "
-//				+ "WHERE us.username = '%s' " ,username
-//				+ "AND ce.userID = us.userID"
-//				+ "AND cs.courseID = ce.courseID"
-//				+ "ORDER BY us.username"));
-//		 if (rs.next()) {
-//			 	 Course course = new Course();
-//				 course.setCourseName(rs.getString("coursename"));
-//				 listQuiz = getQuiz(rs.getInt("courseID"));
-//				 course.setQuizlist(listQuiz);  //add the setter in course class
-//				 
-//				 courses.add(course);
-//			}
-//		}catch(Exception e){
-//			e.printStackTrace();
-//		}
-//		return courses; 			
-//	}
+	public static String getAnswer(int questionID) {
+		String answer = "";
+		try{
+			Connection c = instance.createConnection();
+			Statement stmt = c.createStatement();			
+			ResultSet rs = stmt.executeQuery(String.format("SELECT * FROM Answers WHERE QuestionID = '%d';", questionID));
+			if(rs.next()) {
+				answer = rs.getString("AnswerText");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return answer;
+	}
 	
 	public static Boolean isQuizExist(String courseName, String quizName){
 		Boolean result = false;
 		try{
 			Connection c = instance.createConnection();
 			Statement stmt = c.createStatement();
-			ResultSet rs = stmt.executeQuery(String.format("SELECT * FROM Quizs JOIN Courses ON Courses.CourseID = Quizs.CourseID "
+			ResultSet rs = stmt.executeQuery(String.format("SELECT * "
+														 + "FROM Quizs "
+														 + "JOIN Courses ON Courses.CourseID = Quizs.CourseID "
 														 + "WHERE CourseName = '%s' AND QuizName = '%s';", courseName, quizName));
 			result = rs.next();
 		}catch(Exception e){
@@ -397,7 +434,7 @@ public class Database {
 			preparedStatement.setString(1, quizName);
 			preparedStatement.setLong(2, accessTime);
 			preparedStatement.setLong(3, quizTime);
-			preparedStatement.setString(3, courseName);
+			preparedStatement.setString(4, courseName);
 			preparedStatement.executeUpdate();
 		}catch(Exception e){
 			e.printStackTrace();
@@ -466,12 +503,12 @@ public class Database {
 					   + "From Questions "
 					   + "INNER JOIN Quizs ON Quizs.QuizID = Questions.QuizID "
 					   + "INNER JOIN Courses ON Courses.CourseID = Quizs.CourseID "
-					   + "WHERE QuestionText = ?, QuizName = ?,CourseName = ?;";
+					   + "WHERE QuestionText = ? AND QuizName = ? AND CourseName = ?;";
 			PreparedStatement preparedStatement = c.prepareStatement(sql);
 			preparedStatement.setString(1, answer);
 			preparedStatement.setString(2, questionText);
-			preparedStatement.setString(2, quizName);
-			preparedStatement.setString(2, courseName);
+			preparedStatement.setString(3, quizName);
+			preparedStatement.setString(4, courseName);
 			preparedStatement.executeUpdate();
 		}catch(Exception e){
 			e.printStackTrace();
@@ -479,49 +516,15 @@ public class Database {
 	}
 	
 	
-/* Function to Delete the details from tables - QUIZ, QUESTIONS , ANSWERS , CHOICE with 
- 	* @param courseName
- 	* @param quizName
- */
-	
-//	public static void deleteQuiz(String courseName, String quizName){
-//		PreparedStatement preparedStatement = null;
-//		try{
-//			Connection c = instance.createConnection();
-//			
-//			String sql = "DELETE FROM answers as, choices ch "
-//					+ "WHERE EXISTS"
-//					+ "(SELECT questionID FROM questions qs WHERE"
-//					+ "quizID = (SELECT quizID FROM quiz WHERE quizname = ?)"
-//					+ "AND qs.questionID = as.questionID"
-//					+ "AND qs.questionID = ch.questionID"
-//					+ "AND as.questionID = ch.questionID )";
-//					
-//			preparedStatement = c.prepareStatement(sql);
-//			preparedStatement.setString(1, quizName);
-//			preparedStatement.executeUpdate(); 
-//			
-//			
-//			String sql1 = "DELETE FROM question "
-//					+ "WHERE quizID = (SELECT quizID FROM quiz WHERE quizname = ?)";
-//			
-//			preparedStatement = c.prepareStatement(sql1);
-//			preparedStatement.setString(1, quizName);
-//			preparedStatement.executeUpdate(); 
-//			
-//			String sql2 = "DELETE FROM quiz " 
-//	                   + "WHERE quizname = ?"
-//	                   + "AND courseID = (SELECT coursename FROM course WHERE coursename = ?)";
-//			
-//			preparedStatement = c.prepareStatement(sql2);
-//			preparedStatement.setString(1, quizName);
-//			preparedStatement.setString(2, courseName);
-//			preparedStatement.executeUpdate(); 
-//						
-//			
-//		}catch(Exception e){
-//			e.printStackTrace();
-//		}
-//	}
+	/**
+	 * Delete Quiz and records in related tables
+	 */
+	public static void deleteQuiz(String courseName, String quizName){
+		try{			
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
 
 }
