@@ -8,8 +8,16 @@ public class Main {
 //		}else{
 //			System.out.println("Invalid");
 //		}
-		
-		App app = new App();
+//		Database.createCourse("test course", "1234");
+//		Database.deleteCourse("test course");
+//		Database.addCourse("Paul", "COEN 275 OOADP", "1234");
+		if (Database.isQuizExist("COEN 275 OOADP", "quiz")) {
+			System.out.println("exist");
+		} else {
+			System.out.println("not exist");
+		}
+//		Database.createCourse("COEN 275 OOADP", "1234");
+//		App app = new App();
 //		testSignUp(app);
 		//testLogin(app, "Paul", "1234");
 		//testLogin(app, "Liang", "1111");
@@ -22,7 +30,7 @@ public class Main {
 	}
 	
 	public static void testSignUp(App app) {
-		app.signUp("Liang", "1111", "1111", "teacher");
+		app.signUp("Paul", "1111", "1111", "student");
 	}
 
 }

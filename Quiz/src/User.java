@@ -43,10 +43,10 @@ public abstract class User {
 	}
 	
 	public void loadCourse() {
-		List<Course> list = Database.loadCourse(getUsername());
-		for (Course c : list) {
-			courses.add(c);
-		}
+//		List<Course> list = Database.loadCourse(getUsername());
+//		for (Course c : list) {
+//			courses.add(c);
+//		}
 	}
 	
 	public List<Course> getCourse() {
@@ -57,7 +57,7 @@ public abstract class User {
 		for (Course course : courses) {
 			if (course.getCourseName().equals(courseName)) {
 				courses.remove(course);
-				Database.deleteCourse(getUsername(), courseName);
+//				Database.deleteCourse(getUsername(), courseName);
 			}
 		}
 	}

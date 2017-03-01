@@ -31,11 +31,26 @@ public class Question {
 		return isCorrect;
 	}
 	
+	public void setChoice(String option, String detail) {
+		if (option.equals("A") ||
+			option.equals("B") ||
+			option.equals("C") ||
+			option.equals("D")) {
+			choices.put(option, detail);
+		} else {
+			throw new IllegalArgumentException("choices should be A,B,C,D");
+		}
+	}
+	
 	public String getQuestion() {
 		return quesiton;
 	}
 	
 	public Map<String, String> getChoices() {
 		return choices;
+	}
+	
+	public String getAnswer() {
+		return answer;
 	}
 }
