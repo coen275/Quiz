@@ -52,28 +52,21 @@ public class Database {
 			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS Questions ("
 					+ "QuestionID INT PRIMARY KEY AUTO_INCREMENT, "
 					+ "QuizID INT NOT NULL, "
-					+ "QuestionText TEXT);");
-			//answers table(teacher)
+					+ "QuestionText TEXT, "
+					+ "SerialNumber INT NOT NULL);");
+			//answers table
 			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS Answers ("
 					+ "AnswerID INT PRIMARY KEY AUTO_INCREMENT, "
 					+ "QuestionID INT NOT NULL, "
-					+ "AnswerText VARCHAR(255));");
-			//choices table
-			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS Choices ("
-					+ "ChoiceID INT PRIMARY KEY AUTO_INCREMENT, "
-					+ "QuestionID INT NOT NULL, "
-					+ "ChoiceA TEXT, "
-					+ "ChoiceB TEXT, "
-					+ "ChoiceC TEXT, "
-					+ "ChoiceD TEXT);");
+					+ "AnswerText TEXT,"
+					+ "IsCorrect TINYINT(1));");
 			//questionresults table(student)
 			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS QuestionResults ("
 					+ "QuestionResultID INT PRIMARY KEY AUTO_INCREMENT, "
 					+ "UserID INT NOT NULL, "
 					+ "QuizID INT NOT NULL, "
 					+ "QuestionID INT NOT NULL, "
-					+ "ChosenAnswer VARCHAR(255), "
-					+ "Result TINYINT(0) NOT NULL);");
+					+ "AnswerID INT NOT NULL);");
 			//quizresults table
 			stmt.executeUpdate("CREATE TABLE IF NOT EXISTS QuizResults ("
 					+ "QuizResultID INT PRIMARY KEY AUTO_INCREMENT, "
@@ -283,7 +276,7 @@ public class Database {
 			while (rs.next()) {
 			 	Course course = new Course(rs.getString("CourseName"),
 			 			 				   rs.getString("AccessCode"), 
-			 			 				   loadQuizs(rs.getInt("UserID"), rs.getString("type"), rs.getInt("CourseID")));
+			 			 				   loadQuizs(rs.getInt("CourseID")));
 				courses.add(course);
 			}
 		}catch(Exception e){
@@ -298,7 +291,7 @@ public class Database {
 	 * @param CourseID
 	 * @return
 	 */
-	public static List<Quiz> loadQuizs(int userID, String type, int courseID) {
+	public static List<Quiz> loadQuizs(int courseID) {
 		List<Quiz> quizs = new ArrayList<>();
 		try{
 			Connection c = instance.createConnection();
@@ -310,7 +303,7 @@ public class Database {
 				quiz.setName(rs.getString("QuizName"));
 				quiz.setQuizTime(rs.getLong("QuizTime"));
 //				System.out.println("QuizName: " + quiz.getName() + ", AccessTime: " + quiz.getAccessTime() + ", QuizTime: " + quiz.getQuizTime());
-				quiz.setQuestions(loadQuestions(userID, type, rs.getInt("QuizID")));
+				quiz.setQuestions(loadQuestions(rs.getInt("QuizID")));
 				quizs.add(quiz);
 			}
 		}catch(Exception e){
@@ -319,25 +312,14 @@ public class Database {
 		return quizs;
 	}
 	
-	public static List<Question> loadQuestions(int userID, String type, int quizID){
+	public static List<Question> loadQuestions(int quizID){
 		List<Question> questions = new ArrayList<>();
-		String answer;
 		try{
 			Connection c = instance.createConnection();
 			Statement stmt = c.createStatement();			
 			ResultSet rs = stmt.executeQuery(String.format("SELECT * FROM Questions WHERE QuizID = '%d';", quizID));
 			while (rs.next()) {
-				if(type.equals("teacher")) {
-					answer = getAnswer(rs.getInt("QuestionID"));
-				} else {
-					answer = getQuestionResult(rs.getInt("QuestionID"), quizID, userID);
-				}
-				Question question = new Question(rs.getString("QuestionText"), getChoices(rs.getInt("QuestionID")), answer);
-//				System.out.println("Question Text: " + question.getQuestion());
-//				for (String choice: question.getChoices().keySet()){
-//					System.out.println("Choice " + choice + ": " + question.getChoices().get(choice));
-//				}
-//				System.out.println("Answer: " + question.getAnswer());
+				Question question = new Question(rs.getString("QuestionText"), rs.getInt("SerialNumber"), getAnswers(rs.getInt("QuestionID")));
 				questions.add(question);
 			}
 		}catch(Exception e){
@@ -346,54 +328,20 @@ public class Database {
 		return questions;
 	}
 	
-	public static Map<String, String> getChoices(int questionID) {
-		Map<String, String> choices = new HashMap<>();
-		try{
-			Connection c = instance.createConnection();
-			Statement stmt = c.createStatement();			
-			ResultSet rs = stmt.executeQuery(String.format("SELECT * FROM Choices WHERE QuestionID = '%d';", questionID));
-			if(rs.next()) {
-				choices.put("A", rs.getString("ChoiceA"));
-				choices.put("B", rs.getString("ChoiceB"));
-				choices.put("C", rs.getString("ChoiceC"));
-				choices.put("D", rs.getString("ChoiceD"));
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return choices;
-	}
-	
-	public static String getQuestionResult(int questionID, int quizID, int userID) {
-		String answer = "";
-		try{
-			Connection c = instance.createConnection();
-			Statement stmt = c.createStatement();			
-			ResultSet rs = stmt.executeQuery(String.format("SELECT * "
-														 + "FROM QuestionResults "
-														 + "WHERE QuestionID = '%d' AND QuizID = '%d' AND UserID = '%d';", questionID, quizID, userID));
-			if(rs.next()) {
-				answer = rs.getString("ChosenAnswer");
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return answer;
-	}
-	
-	public static String getAnswer(int questionID) {
-		String answer = "";
+	public static List<Answer> getAnswers(int questionID) {
+		List<Answer> answers = new ArrayList<>();
 		try{
 			Connection c = instance.createConnection();
 			Statement stmt = c.createStatement();			
 			ResultSet rs = stmt.executeQuery(String.format("SELECT * FROM Answers WHERE QuestionID = '%d';", questionID));
-			if(rs.next()) {
-				answer = rs.getString("AnswerText");
+			while(rs.next()) {
+				Answer a = new Answer(rs.getInt("AnswerID"), rs.getString("AnswerText"), rs.getBoolean("IsCorrect"));
+				answers.add(a);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		return answer;
+		return answers;
 	}
 	
 	public static Boolean isQuizExist(String courseName, String quizName){
@@ -447,68 +395,41 @@ public class Database {
 
 	private static void addQuestion(String courseName, String quizName, Question q) {
 		String questionText = q.getQuestion();
-		Map<String, String> choices = q.getChoices();
-		String answer = q.getAnswer();
+		List<Answer> answers = q.getAnswers();
+		int serialNumber = q.getSerialNumber();
 		try{
 			Connection c = instance.createConnection();
-			String sql = "INSERT INTO Questions (QuizID, QuestionText) "
-					   + "SELECT QuizID, ? "
+			String sql = "INSERT INTO Questions (QuizID, QuestionText, SerialNumber) "
+					   + "SELECT QuizID, ?, ? "
 					   + "FROM Quizs "
 					   + "WHERE QuizName = ?;";
 			PreparedStatement preparedStatement = c.prepareStatement(sql);
 			preparedStatement.setString(1, questionText);
-			preparedStatement.setString(2, quizName);
+			preparedStatement.setInt(2, serialNumber);
+			preparedStatement.setString(3, quizName);
 			preparedStatement.executeUpdate();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		
-		addAnswer(courseName, quizName, questionText, answer);
-		addChoices(courseName, quizName, questionText, choices);
+		for(Answer a : answers) {
+			addAnswer(quizName, serialNumber, a.getAnswerText(), a.getStatus());
+		}
 	}
 	
-	private static void addChoices(String courseName, String quizName, String questionText, Map<String, String> choices){
-		String choiceA = choices.get("A");
-		String choiceB = choices.get("B");
-		String choiceC = choices.get("C");
-		String choiceD = choices.get("D");
+	private static void addAnswer(String quizName, int serialNumber, String answerText, boolean isCorrect) {
 		try{
 			Connection c = instance.createConnection();
-			String sql = "INSERT INTO Choices (QuestionID, ChoiceA, ChoiceB, ChoiceC, ChoiceD) "
-					   + "SELECT QuestionID, ?, ?, ?, ? "
+			String sql = "INSERT INTO Answers (QuestionID, AnswerText, IsCorrect) "
+					   + "SELECT QuestionID, ?, ? "
 					   + "FROM Questions "
 					   + "INNER JOIN Quizs ON Quizs.QuizID = Questions.QuizID "
-					   + "INNER JOIN Courses ON Quizs.CourseID = Courses.CourseID "
-					   + "WHERE QuestionText = ? AND CourseName = ? AND QuizName = ?;";
+					   + "WHERE QuizName = ? AND SerialNumber = ?;";
 			PreparedStatement preparedStatement = c.prepareStatement(sql);
-			preparedStatement.setString(1, choiceA);
-			preparedStatement.setString(2, choiceB);
-			preparedStatement.setString(3, choiceC);
-			preparedStatement.setString(4, choiceD);
-			preparedStatement.setString(5, questionText);
-			preparedStatement.setString(6, courseName);
-			preparedStatement.setString(7, quizName);
-			preparedStatement.executeUpdate();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		
-	}
-	
-	private static void addAnswer(String courseName, String quizName, String questionText, String answer) {
-		try{
-			Connection c = instance.createConnection();
-			String sql = "INSERT INTO Answers (QuestionID, AnswerText) "
-					   + "SELECT QuestionID, ? "
-					   + "From Questions "
-					   + "INNER JOIN Quizs ON Quizs.QuizID = Questions.QuizID "
-					   + "INNER JOIN Courses ON Courses.CourseID = Quizs.CourseID "
-					   + "WHERE QuestionText = ? AND QuizName = ? AND CourseName = ?;";
-			PreparedStatement preparedStatement = c.prepareStatement(sql);
-			preparedStatement.setString(1, answer);
-			preparedStatement.setString(2, questionText);
+			preparedStatement.setString(1, answerText);
+			preparedStatement.setBoolean(2, isCorrect);
 			preparedStatement.setString(3, quizName);
-			preparedStatement.setString(4, courseName);
+			preparedStatement.setInt(4, serialNumber);
 			preparedStatement.executeUpdate();
 		}catch(Exception e){
 			e.printStackTrace();

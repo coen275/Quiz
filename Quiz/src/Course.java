@@ -37,6 +37,10 @@ public class Course {
 		tempQuiz = new Quiz();
 	}
 	
+	public Quiz getTempQuiz(){
+		return tempQuiz;
+	}
+	
 	/**
 	 * Add details to tempQuiz object when click finish button
 	 * @param name
@@ -45,11 +49,7 @@ public class Course {
 	 * @param answers
 	 * @param questions
 	 */
-	public void addQuiz(String name, long accessTime, long quizTime, List<Question> questions, String courseName) {
-		tempQuiz.setName(name);
-		tempQuiz.setAccessTime(accessTime);
-		tempQuiz.setQuizTime(quizTime);
-		tempQuiz.setQuestions(questions);
+	public void addQuiz(String courseName) {
 		quizs.add(tempQuiz);
 		Database.addQuiz(courseName, tempQuiz);
 		tempQuiz = null;

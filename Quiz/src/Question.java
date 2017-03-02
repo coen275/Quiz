@@ -1,64 +1,56 @@
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Question {
 	private String quesiton;
-	private Map<String, String> choices; //MAP<option, details> e.g ("A", "interface."),("B", "class.")
-	private String answer;
-	private boolean isCorrect;
+	private int serialNumber;
+	private List<Answer> answers;
 	
-	public Question(String question, Map<String, String> choices, String answer) {
+	public Question(String question, int serialNumber) {
 		this.quesiton = question;
-		this.choices = choices;
-		this.answer = answer;
-		isCorrect = false;
+		this.serialNumber = serialNumber;
+		answers = new ArrayList<>();
 	}
 	
-	public void setAnswer(String answer) {
-		if (answer.equals("A") ||
-			answer.equals("B") ||
-			answer.equals("C") ||
-			answer.equals("D")) {
-			this.answer = answer;
-		} else {
-			throw new IllegalArgumentException("Answer should be A,B,C,D");
-		}
+	public Question(String question, int serialNumber, List<Answer> answers) {
+		this.quesiton = question;
+		this.serialNumber = serialNumber;
+		this.answers = answers;
 	}
 	
-	public boolean isCorrect(String answer) {
-		if(this.answer.equals(answer)) {
-			isCorrect = true;
-		}
-		return isCorrect;
+	public void createAnswer(String answerText, boolean isCorrect) {
+		Answer answer = new Answer(answerText, isCorrect);
+		answers.add(answer);
 	}
 	
-	public void setChoice(String option, String detail) {
-		if (option.equals("A") ||
-			option.equals("B") ||
-			option.equals("C") ||
-			option.equals("D")) {
-			choices.put(option, detail);
-		} else {
-			throw new IllegalArgumentException("choices should be A,B,C,D");
-		}
+	public void setSerialNumber(int serialNumber) {
+		this.serialNumber = serialNumber;
+	}
+	
+	public void setQuestionText(String question) {
+		this.quesiton = question;
+	}
+
+	public void setAnswer(List<Answer> answers) {
+		this.answers = answers;
 	}
 	
 	public String getQuestion() {
 		return quesiton;
 	}
 	
-	public Map<String, String> getChoices() {
-		return choices;
+	public List<Answer> getAnswers() {
+		return answers;
 	}
 	
-	public String getAnswer() {
-		return answer;
+	public int getSerialNumber() {
+		return serialNumber;
 	}
 	
 	public void printQuestionInfo(){
-		System.out.println("Question Text: " + getQuestion());
-		for (String choice: getChoices().keySet()){
-			System.out.println("Choice " + choice + ": " + getChoices().get(choice));
+		System.out.println("Question Text: " + getQuestion() + ", SerialNumber: " + serialNumber);
+		for (Answer a: answers){
+			a.printAnswerInfo();
 		}
-		System.out.println("Answer: " + getAnswer());
 	}
 }

@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -8,9 +9,11 @@ public class Quiz {
 	private long accessTime;
 	private long quizTime;
 	private List<Question> questions;
+	private int serialNumber;
 	
 	public Quiz() {
-		
+		questions = new ArrayList<>();
+		serialNumber = 1;
 	}
 	
 	/**
@@ -57,9 +60,10 @@ public class Quiz {
 	/**
 	 * WARN: Have to think how to pass the params
 	 */
-	public void createQuestion(String question, Map<String, String> choices, String answer){
-		Question q = new Question(question, choices, answer);
+	public void createQuestion(String question){
+		Question q = new Question(question, serialNumber);
 		questions.add(q);
+		serialNumber++;
 	}
 	
 	/**
