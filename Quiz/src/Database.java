@@ -247,8 +247,10 @@ public class Database {
 	public static void deleteCourse(String courseName) {
 		try{
 			Connection c = instance.createConnection();
-			String sql = "DELETE FROM Courses " 
-	                   + "WHERE CourseName = ?;" ;
+			String sql = "DELETE Courses, CourseEnrollment "
+					   + "From Courses "
+					   + "JOIN CourseEnrollment ON Courses.CourseID = CourseEnrollment.CourseID "
+					   + "WHERE CourseName = ?;" ;
 			PreparedStatement preparedStatement = c.prepareStatement(sql);
 			preparedStatement.setString(1, courseName);
 			preparedStatement.executeUpdate(); 
@@ -438,11 +440,137 @@ public class Database {
 	
 	
 	/**
-	 * Delete Quiz and records in related tables
+	 * Delete records from Quizs, Questions, Answers
 	 */
 	public static void deleteQuiz(String courseName, String quizName){
 		try{			
-			
+			Connection c = instance.createConnection();
+			String sql = "DELETE Quizs, Questions, Answers "
+					   + "FROM Quizs "
+					   + "JOIN Courses ON Courses.CourseID = Quizs.CourseID "
+					   + "JOIN Questions ON Quizs.QuizID = Questions.QuizID "
+					   + "JOIN Answers ON Questions.QuestionID = Answers.QuestionID "
+					   + "WHERE CourseName = ? AND QuizName = ?;";
+			PreparedStatement preparedStatement = c.prepareStatement(sql);
+			preparedStatement.setString(1, courseName);
+			preparedStatement.setString(2, quizName);
+			preparedStatement.executeUpdate();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	public static int getQuizID(String quizName) {
+		int quizID = 0;
+		try{
+			Connection c = instance.createConnection();
+			Statement stmt = c.createStatement();
+			ResultSet rs = stmt.executeQuery(String.format("SELECT QuizID FROM Quizs WHERE QuizName = '%s';", quizName));
+			if (rs.next()) {
+				quizID = rs.getInt("QuizID");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return quizID;
+	}
+	
+	public static int getUserID(String username) {
+		int userID = 0;
+		try{
+			Connection c = instance.createConnection();
+			Statement stmt = c.createStatement();
+			ResultSet rs = stmt.executeQuery(String.format("SELECT UserID FROM Users WHERE Username = '%s';", username));
+			if (rs.next()) {
+				userID = rs.getInt("UserID");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return userID;
+	}
+	
+	public static int getQuestionID(int answerID) {
+		int questionID = 0;
+		try{
+			Connection c = instance.createConnection();
+			Statement stmt = c.createStatement();
+			ResultSet rs = stmt.executeQuery(String.format("SELECT QuestionID FROM Answers WHERE AnswerID = '%d';", answerID));
+			if (rs.next()) {
+				questionID = rs.getInt("QuestionID");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return questionID;
+	}
+	
+	public static void addQuestionResult(int userID, int quizID, int questionID, int answerID){
+		try{
+			Connection c = instance.createConnection();
+			String sql = "INSERT INTO QuestionResults (UserID, QuizID, QuestionID, AnswerID)"
+					   + "VALUE (?, ?, ?, ?);";
+			PreparedStatement preparedStatement = c.prepareStatement(sql);
+			preparedStatement.setInt(1, userID);
+			preparedStatement.setInt(2, quizID);
+			preparedStatement.setInt(3, questionID);
+			preparedStatement.setInt(4, answerID);
+			preparedStatement.executeUpdate();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public static int getScore(int userID, int quizID) {
+		int score = 0;
+		try{
+			Connection c = instance.createConnection();
+			Statement stmt = c.createStatement();
+			ResultSet rs = stmt.executeQuery(String.format("SELECT COUNT(*) AS score "
+														 + "FROM QuestionResults "
+														 + "JOIN Answers ON Answers.AnswerID = QuestionResults.AnswerID "
+														 + "WHERE IsCorrect = 1 AND UserID = '%d' AND QuizID = '%d';", userID, quizID));
+			if (rs.next()) {
+				score = rs.getInt("score");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return score;
+	}
+	
+	public static int getTotalScore(int userID, int quizID) {
+		int score = 0;
+		try{
+			Connection c = instance.createConnection();
+			Statement stmt = c.createStatement();
+			ResultSet rs = stmt.executeQuery(String.format("SELECT COUNT(*) AS score "
+														 + "FROM QuestionResults "
+														 + "JOIN Answers ON Answers.AnswerID = QuestionResults.AnswerID "
+														 + "WHERE UserID = '%d' AND QuizID = '%d';", userID, quizID));
+			if (rs.next()) {
+				score = rs.getInt("score");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return score;
+	}
+	
+	public static void calculateQuizResult(int userID, int quizID) {
+		int score = getScore(userID, quizID);
+		int totalSocre = getTotalScore(userID, quizID);
+		try{
+			Connection c = instance.createConnection();
+			String sql = "INSERT INTO QuizResults (UserID, QuizID, Score, TotalScore)"
+					   + "VALUE (?, ?, ?, ?);";
+			PreparedStatement preparedStatement = c.prepareStatement(sql);
+			preparedStatement.setInt(1, userID);
+			preparedStatement.setInt(2, quizID);
+			preparedStatement.setInt(3, score);
+			preparedStatement.setInt(4, totalSocre);
+			preparedStatement.executeUpdate();
 		}catch(Exception e){
 			e.printStackTrace();
 		}

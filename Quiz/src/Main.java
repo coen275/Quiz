@@ -22,7 +22,9 @@ public class Main {
 //		loadCourse();
 		
 		App app = new App();
-
+//		testAddQuizMethodInDBClass();
+//		Database.deleteQuiz("COEN 275 OOADP","275");
+//		Database.createCourse("Liang", "test course", "1234");
 		
 		
 	}
@@ -59,27 +61,27 @@ public class Main {
 		Course course = new Course("COEN 275 OOADP", "1234", new ArrayList<Quiz>());
 		course.createQuiz();
 		Quiz tempQuiz = course.getTempQuiz();
-		String quizName = "Liang test 2";
-		long accessTime = 1488341477;
-		long quizTime = 600000;
+		String quizName = "275";
+		long accessTime = 1488041477;
+		long quizTime = 1000000;
 		tempQuiz.setName(quizName);
 		tempQuiz.setAccessTime(accessTime);
 		tempQuiz.setQuizTime(quizTime);
 
 		//create duplicated questions
-		String questiontext = "which language do you use in the COEN 275?";
+		String questiontext = "which city do you live in?";
 		tempQuiz.createQuestion(questiontext);
-		tempQuiz.getQuestions().get(tempQuiz.getQuestions().size() - 1).createAnswer("java", true);
-		tempQuiz.getQuestions().get(tempQuiz.getQuestions().size() - 1).createAnswer("c", false);
-		tempQuiz.getQuestions().get(tempQuiz.getQuestions().size() - 1).createAnswer("ruby", false);
-		tempQuiz.getQuestions().get(tempQuiz.getQuestions().size() - 1).createAnswer("python", false);
+		tempQuiz.getQuestions().get(tempQuiz.getQuestions().size() - 1).createAnswer("SF", true);
+		tempQuiz.getQuestions().get(tempQuiz.getQuestions().size() - 1).createAnswer("SJ", false);
+		tempQuiz.getQuestions().get(tempQuiz.getQuestions().size() - 1).createAnswer("NY", false);
+		tempQuiz.getQuestions().get(tempQuiz.getQuestions().size() - 1).createAnswer("MI", false);
 			
-		String questiontext1 = "which language do you use in the COEN 275?";
+		String questiontext1 = "which language do you speak?";
 		tempQuiz.createQuestion(questiontext1);
-		tempQuiz.getQuestions().get(tempQuiz.getQuestions().size() - 1).createAnswer("java", true);
-		tempQuiz.getQuestions().get(tempQuiz.getQuestions().size() - 1).createAnswer("c", false);
-		tempQuiz.getQuestions().get(tempQuiz.getQuestions().size() - 1).createAnswer("ruby", false);
-		tempQuiz.getQuestions().get(tempQuiz.getQuestions().size() - 1).createAnswer("python", false);
+		tempQuiz.getQuestions().get(tempQuiz.getQuestions().size() - 1).createAnswer("EN", true);
+		tempQuiz.getQuestions().get(tempQuiz.getQuestions().size() - 1).createAnswer("CN", false);
+		tempQuiz.getQuestions().get(tempQuiz.getQuestions().size() - 1).createAnswer("JP", false);
+		tempQuiz.getQuestions().get(tempQuiz.getQuestions().size() - 1).createAnswer("SP", false);
 		
 		course.addQuiz(course.getCourseName());
 		

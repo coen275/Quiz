@@ -69,7 +69,7 @@ public class Course {
 	public void deleteQuiz(String name) {
 		for (Quiz q : quizs) {
 			if (q.getName().equals(name)) {
-//				Database.deleteQuiz(name, q.getName());
+				Database.deleteQuiz(name, q.getName());
 				quizs.remove(q);
 			}
 		}

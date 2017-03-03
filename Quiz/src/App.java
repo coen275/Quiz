@@ -62,8 +62,10 @@ public class App extends JFrame {
 		signoutButton.setEnabled(user != null);
 		
 		revalidate();
-		//test loadcourse after login
+		//print all the courses' info after login
 		testLoadCourseInUserClass(currentUser);
+		//student submits the quiz
+//		currentUser.submitResult(currentUser.getUsername(), selectAnswer(currentUser));
 	}
 	
 	public void logout() {
@@ -108,5 +110,18 @@ public class App extends JFrame {
 				}
 			}
 		}
+	}
+	
+	/*
+	 * Test that Student choose the answer and submit the quiz.
+	 * Write results into QuestionResults table
+	 */
+	public Quiz selectAnswer(User currentUser){
+		Quiz q = currentUser.getCourse().get(0).getQuizs().get(1);
+		System.out.println("-----------------------------");
+		for (int i = 0; i < q.getQuestions().size(); i++) {
+			q.getQuestions().get(i).getAnswers().get(i).selectAnswer();
+		}
+		return q;
 	}
 }

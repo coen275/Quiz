@@ -53,16 +53,6 @@ public abstract class User {
 		return courses;
 	}
 	
-
-	public void deleteCourse(String courseName) {
-		for (Course course : courses) {
-			if (course.getCourseName().equals(courseName)) {
-				courses.remove(course);
-//				Database.deleteCourse(getUsername(), courseName);
-			}
-		}
-	}
-	
 	public static boolean isValidCode(String s) {
 		boolean isValid = true;
 		if (s.length() == 4) {
@@ -75,6 +65,31 @@ public abstract class User {
 			isValid = false;
 		}
 		return isValid;
+	}
+	
+	//should be in student class
+	public void submitResult(String username, Quiz quiz) {
+		String quizName = quiz.getName();
+		int quizID = Database.getQuizID(quizName);
+		int userID = Database.getUserID(username);
+		int answerID, questionID;
+		List<Question> questions = quiz.getQuestions();
+		for (Question q : questions) {
+			for(Answer a : q.getAnswers()) {
+				if (a.isSelected()){
+					answerID = a.getAnswerID();
+					questionID = Database.getQuestionID(answerID);
+					Database.addQuestionResult(userID, quizID, questionID, answerID);
+				}
+			}
+		}
+		
+		calculateQuizResult(userID, quizID);
+	}
+	
+	//should be in student class
+	public void calculateQuizResult(int userID, int quizID) {
+		Database.calculateQuizResult(userID, quizID);
 	}
 	
 	public void printUserInfo(){
