@@ -460,6 +460,23 @@ public class Database {
 		}
 	}
 	
+	public static Boolean isQuizTaken(String courseName, String quizName) {
+		Boolean result = false;
+		try{
+			Connection c = instance.createConnection();
+			Statement stmt = c.createStatement();
+			ResultSet rs = stmt.executeQuery(String.format("SELECT COUNT(*) "
+														 + "FROM QuizResults "
+														 + "JOIN Quizs ON Quizs.QuizID = QuizResults.QuizID "
+														 + "JOIN Courses ON Courses.CourseID = Quizs.CourseID "
+														 + "WHERE CourseName = '%s' AND QuizName = '%s';", courseName, quizName));
+			result = rs.next();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
 	public static int getQuizID(String quizName) {
 		int quizID = 0;
 		try{
@@ -574,6 +591,118 @@ public class Database {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+	}
+
+	public static Double getStudentScore(String courseName, String quizName, String username) {
+		int score = 0;
+		int totalscore = 0;
+		try{
+			Connection c = instance.createConnection();
+			Statement stmt = c.createStatement();
+			ResultSet rs = stmt.executeQuery(String.format("SELECT Score, TotalScore "
+														 + "FROM QuizResults "
+														 + "JOIN Quizs ON Quizs.QuizID = QuizResults.QuizID "
+														 + "JOIN Courses ON Courses.CourseID = Quizs.CourseID "
+														 + "JOIN Users ON Users.UserID = QuizResults.UserID "
+														 + "WHERE CourseName = '%s' AND QuizName = '%s' AND Username = '%s';", courseName, quizName, username));
+			if (rs.next()) {
+				score = rs.getInt("Score");
+				totalscore = rs.getInt("TotalScore");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return (double) 100 * score / totalscore;
+	}
+	
+	
+	
+	public static Double getHighestScore(String courseName, String quizName) {
+		int score = 0;
+		int totalscore = 0;
+		try{
+			Connection c = instance.createConnection();
+			Statement stmt = c.createStatement();
+			ResultSet rs = stmt.executeQuery(String.format("SELECT Score, TotalScore "
+														 + "FROM QuizResults "
+														 + "JOIN Quizs ON Quizs.QuizID = QuizResults.QuizID "
+														 + "JOIN Courses ON Courses.CourseID = Quizs.CourseID "
+														 + "WHERE CourseName = '%s' AND QuizName = '%s' "
+														 + "ORDER BY Score DESC", courseName, quizName));
+			if (rs.next()) {
+				score = rs.getInt("score");
+				totalscore = rs.getInt("TotalScore");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return (double) 100 * score / totalscore;
+	}
+	
+	public static Double getLowestScore(String courseName, String quizName) {
+		int score = 0;
+		int totalscore = 0;
+		try{
+			Connection c = instance.createConnection();
+			Statement stmt = c.createStatement();
+			ResultSet rs = stmt.executeQuery(String.format("SELECT Score, TotalScore "
+														 + "FROM QuizResults "
+														 + "JOIN Quizs ON Quizs.QuizID = QuizResults.QuizID "
+														 + "JOIN Courses ON Courses.CourseID = Quizs.CourseID "
+														 + "WHERE CourseName = '%s' AND QuizName = '%s' "
+														 + "ORDER BY Score ASC", courseName, quizName));
+			if (rs.next()) {
+				score = rs.getInt("score");
+				totalscore = rs.getInt("TotalScore");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return (double) 100 * score / totalscore;
+	}
+	
+	public static Double getMediumScore(String courseName, String quizName) {
+		int score = 0;
+		int totalscore = 0;
+		int totalcount = getNumberOfRows(courseName, quizName);
+		int medianrow = totalcount / 2;
+		try{
+			Connection c = instance.createConnection();
+			Statement stmt = c.createStatement();
+			ResultSet rs = stmt.executeQuery(String.format("SELECT Score, TotalScore "
+														 + "FROM QuizResults "
+														 + "JOIN Quizs ON Quizs.QuizID = QuizResults.QuizID "
+														 + "JOIN Courses ON Courses.CourseID = Quizs.CourseID "
+														 + "WHERE CourseName = '%s' AND QuizName = '%s' "
+														 + "ORDER BY Score ASC "
+														 + "LIMIT %d, 1;", courseName, quizName, medianrow));
+			if (rs.next()) {
+				score = rs.getInt("Score");
+				totalscore = rs.getInt("TotalScore");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return (double) 100 * score / totalscore;
+	}
+	
+	private static Integer getNumberOfRows(String courseName, String quizName) {
+		int count = 0;
+		try{
+			Connection c = instance.createConnection();
+			Statement stmt = c.createStatement();
+			ResultSet rs = stmt.executeQuery(String.format("SELECT COUNT(*) AS count "
+														 + "FROM QuizResults "
+														 + "JOIN Quizs ON Quizs.QuizID = QuizResults.QuizID "
+														 + "JOIN Courses ON Courses.CourseID = Quizs.CourseID "
+														 + "WHERE CourseName = '%s' AND QuizName = '%s';", courseName, quizName));
+			if (rs.next()) {
+				count = rs.getInt("count");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return count;
 	}
 
 }

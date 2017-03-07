@@ -67,6 +67,15 @@ public abstract class User {
 		return isValid;
 	}
 	
+	public void deleteCourse(String courseName) {
+		for(Course c : courses) {
+			if(c.getCourseName() == courseName &&
+			   c.getQuizs().size() > 0) {
+				   courses.remove(c);
+			}
+		}
+	}
+	
 	//should be in student class
 	public void submitResult(String username, Quiz quiz) {
 		String quizName = quiz.getName();
@@ -83,7 +92,6 @@ public abstract class User {
 				}
 			}
 		}
-		
 		calculateQuizResult(userID, quizID);
 	}
 	

@@ -21,7 +21,11 @@ public class Main {
 		//testLogin(app, "Liang", "1111");
 //		loadCourse();
 		
-		App app = new App();
+//		App app = new App();
+//		System.out.printf("%.2f", Database.getStudentScore("COEN 275 OOADP", "Liang test 2", "Paul"));
+//		System.out.println(Database.getNumberOfRows("COEN 275 OOADP", "Liang test 2"));
+//		System.out.printf("%.2f", Database.getMediumScore("COEN 275 OOADP", "Liang test 2"));
+//		testSignUp(app);
 //		testAddQuizMethodInDBClass();
 //		Database.deleteQuiz("COEN 275 OOADP","275");
 //		Database.createCourse("Liang", "test course", "1234");
@@ -121,7 +125,7 @@ public class Main {
 //	}
 	
 	public static void testSignUp(App app) {
-		app.signUp("Paul", "1111", "1111", "student");
+		app.signUp("Xia", "1111", "1111", "student");
 	}
 
 }

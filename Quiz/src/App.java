@@ -120,7 +120,7 @@ public class App extends JFrame {
 		Quiz q = currentUser.getCourse().get(0).getQuizs().get(1);
 		System.out.println("-----------------------------");
 		for (int i = 0; i < q.getQuestions().size(); i++) {
-			q.getQuestions().get(i).getAnswers().get(i).selectAnswer();
+			q.getQuestions().get(i).getAnswers().get(i+2).selectAnswer();
 		}
 		return q;
 	}
