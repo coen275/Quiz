@@ -596,6 +596,7 @@ public class Database {
 	public static Double getStudentScore(String courseName, String quizName, String username) {
 		int score = 0;
 		int totalscore = 0;
+		double result = -1;
 		try{
 			Connection c = instance.createConnection();
 			Statement stmt = c.createStatement();
@@ -608,11 +609,12 @@ public class Database {
 			if (rs.next()) {
 				score = rs.getInt("Score");
 				totalscore = rs.getInt("TotalScore");
+				result = (double) 100 * score / totalscore;
 			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		return (double) 100 * score / totalscore;
+		return result;
 	}
 	
 	
@@ -620,6 +622,7 @@ public class Database {
 	public static Double getHighestScore(String courseName, String quizName) {
 		int score = 0;
 		int totalscore = 0;
+		double result = -1;
 		try{
 			Connection c = instance.createConnection();
 			Statement stmt = c.createStatement();
@@ -632,16 +635,18 @@ public class Database {
 			if (rs.next()) {
 				score = rs.getInt("score");
 				totalscore = rs.getInt("TotalScore");
+				result = (double) 100 * score / totalscore;
 			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		return (double) 100 * score / totalscore;
+		return result;
 	}
 	
 	public static Double getLowestScore(String courseName, String quizName) {
 		int score = 0;
 		int totalscore = 0;
+		double result = -1;
 		try{
 			Connection c = instance.createConnection();
 			Statement stmt = c.createStatement();
@@ -654,11 +659,12 @@ public class Database {
 			if (rs.next()) {
 				score = rs.getInt("score");
 				totalscore = rs.getInt("TotalScore");
+				result = (double) 100 * score / totalscore;
 			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		return (double) 100 * score / totalscore;
+		return result;
 	}
 	
 	public static Double getMediumScore(String courseName, String quizName) {
@@ -666,6 +672,7 @@ public class Database {
 		int totalscore = 0;
 		int totalcount = getNumberOfRows(courseName, quizName);
 		int medianrow = totalcount / 2;
+		double result = -1;
 		try{
 			Connection c = instance.createConnection();
 			Statement stmt = c.createStatement();
@@ -679,11 +686,12 @@ public class Database {
 			if (rs.next()) {
 				score = rs.getInt("Score");
 				totalscore = rs.getInt("TotalScore");
+				result = (double) 100 * score / totalscore;
 			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		return (double) 100 * score / totalscore;
+		return result;
 	}
 	
 	private static Integer getNumberOfRows(String courseName, String quizName) {
