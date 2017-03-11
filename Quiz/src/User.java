@@ -44,6 +44,7 @@ public abstract class User {
 	
 	public void loadCourse() {
 		List<Course> list = Database.loadCourses(getUsername());
+		courses.clear();
 		for (Course c : list) {
 			courses.add(c);
 		}

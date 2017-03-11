@@ -80,15 +80,16 @@ public class Login extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
-		String username = usernameTextField.getText();
-		String password = String.valueOf(passwordTextField.getPassword());
-		if(username.length() == 0 || password.length() == 0){
-			setErrorMessage("Not all input fields were filled out.");
-			return;
-		}
-		
 		String actionCommand = e.getActionCommand();
 		if(actionCommand == "Login"){
+			
+			String username = usernameTextField.getText();
+			String password = String.valueOf(passwordTextField.getPassword());
+			if(username.length() == 0 || password.length() == 0){
+				setErrorMessage("Not all input fields were filled out.");
+				return;
+			}
+			
 			if(Database.isValidUser(username, password)) {
 				System.out.printf("Login %s %s\n", username, password);
 				clearErrorMessage();
@@ -101,6 +102,8 @@ public class Login extends JPanel implements ActionListener {
 			} else {
 				setErrorMessage("Username or Password is invalid.");
 			}
+		}else if(actionCommand == "Create"){
+			app.createAccount();
 		}
 	}
 

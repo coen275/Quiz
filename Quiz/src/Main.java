@@ -21,7 +21,7 @@ public class Main {
 		//testLogin(app, "Liang", "1111");
 //		loadCourse();
 		
-//		App app = new App();
+		App app = new App();
 //		System.out.printf("%.2f", Database.getStudentScore("COEN 275 OOADP", "Liang test 2", "Paul"));
 //		System.out.println(Database.getNumberOfRows("COEN 275 OOADP", "Liang test 2"));
 //		System.out.printf("%.2f", Database.getMediumScore("COEN 275 OOADP", "Liang test 2"));

@@ -1,30 +1,171 @@
-package experiement_swing;
+//package experiement_swing;
 
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import java.awt.GridLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import javax.swing.BoxLayout;
-import net.miginfocom.swing.MigLayout;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.JButton;
-import javax.swing.LayoutStyle.ComponentPlacement;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
-public class CourseQuiz extends JPanel implements ActionListener {
-	private final JTextField accesscode = new JTextField();// text field for access code
+import java.util.List;
 
+public class CourseQuiz extends JPanel implements ActionListener, ListSelectionListener {
+	private final JTextField accessCodeTextField;
+
+	private JList courseList;
+	private JList quizList;
+	
+	private JPanel quizControlPanel;
+	private JLabel courseNameLabel, quizNameLabel;
+	
+	private App app;
+	private User currentUser;
+	private Course currentCourse;
+	private Quiz currentQuiz;
+	
+	private final Font headerFont = new Font(Font.DIALOG, Font.BOLD, 30);
+	private final Font subHeaderFont = new Font(Font.DIALOG, Font.BOLD, 26);
+	
+	private class ListRenderer extends DefaultListCellRenderer {
+		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+		        JLabel label = (JLabel)super.getListCellRendererComponent(
+		            list,value,index,isSelected,cellHasFocus);
+		        Font font = new Font("Ariel", Font.PLAIN, 20);
+		        label.setFont(font);
+		        return label;
+		    }
+	}
+	
 	/**
 	 * Create the panel.
 	 */
-	public CourseQuiz() {
+	public CourseQuiz(App app) {
+		this.app = app;
 		
+		//Create Course Selection Components
+		JPanel courseSelectionPanel = new JPanel();		
+		
+		JLabel courseSelectionHeader = new JLabel("Select Course");
+		courseSelectionHeader.setFont(headerFont);
+		
+		courseList = new JList();
+		courseList.setCellRenderer(new ListRenderer());
+		courseList.addListSelectionListener(this);
+		
+		JLabel addCourseLabel = new JLabel("Access Code");
+		accessCodeTextField = new JTextField();
+		JButton addCourseButton = new JButton("Add Course");
+		
+		//Create Course Selection Layout
+		GroupLayout courseSelectionLayout = new GroupLayout(courseSelectionPanel);
+		courseSelectionPanel.setLayout(courseSelectionLayout);
+		courseSelectionLayout.setAutoCreateGaps(true);
+		courseSelectionLayout.setHorizontalGroup(courseSelectionLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
+				.addComponent(courseSelectionHeader)
+				.addComponent(courseList)
+				.addGroup(courseSelectionLayout.createSequentialGroup()
+						.addComponent(addCourseLabel)
+						.addComponent(accessCodeTextField))
+				.addComponent(addCourseButton));
+		
+		courseSelectionLayout.setVerticalGroup(courseSelectionLayout.createSequentialGroup()
+				.addComponent(courseSelectionHeader)
+				.addComponent(courseList)
+				.addGap(18)
+				.addGroup(courseSelectionLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+						.addComponent(addCourseLabel)
+						.addComponent(accessCodeTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+				.addComponent(addCourseButton));
+		
+		//Create Quiz Selection Components
+		JPanel quizSelectionPanel = new JPanel();
+		
+		JLabel quizSelectionHeader = new JLabel("Select Course");
+		quizSelectionHeader.setFont(headerFont);
+		
+		quizList = new JList();
+		quizList.setCellRenderer(new ListRenderer());
+		quizList.addListSelectionListener(this);
+		
+		//Create Quiz Selection Layout
+		GroupLayout quizSelectionLayout = new GroupLayout(quizSelectionPanel);
+		quizSelectionPanel.setLayout(quizSelectionLayout);
+		quizSelectionLayout.setAutoCreateGaps(true);
+		quizSelectionLayout.setHorizontalGroup(quizSelectionLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
+				.addComponent(quizSelectionHeader)
+				.addComponent(quizList));
+		
+		quizSelectionLayout.setVerticalGroup(quizSelectionLayout.createSequentialGroup()
+				.addComponent(quizSelectionHeader)
+				.addComponent(quizList));
+		
+		//Create Quiz Control Panel Components
+		quizControlPanel = new JPanel();		
+		
+		courseNameLabel = new JLabel("<Course Name>");
+		courseNameLabel.setFont(headerFont);
+		quizNameLabel = new JLabel("<Quiz Name>");
+		quizNameLabel.setFont(subHeaderFont);
+		JButton takeQuizButton = new JButton("Take Quiz");
+		JButton viewResultsButton = new JButton("View Results");
+		
+		//Create Quiz Controls Layout
+		GroupLayout quizControlLayout = new GroupLayout(quizControlPanel);
+		quizControlPanel.setLayout(quizControlLayout);
+		quizControlLayout.setAutoCreateGaps(true);
+		quizControlLayout.setHorizontalGroup(quizControlLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
+				.addComponent(courseNameLabel)
+				.addComponent(quizNameLabel)
+				.addGroup(quizControlLayout.createSequentialGroup()
+						.addComponent(takeQuizButton)
+						.addComponent(viewResultsButton)));
+		
+		quizControlLayout.setVerticalGroup(quizControlLayout.createSequentialGroup()
+				.addComponent(courseNameLabel)
+				.addComponent(quizNameLabel)
+				.addGroup(quizControlLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+						.addComponent(takeQuizButton)
+						.addComponent(viewResultsButton)));
+		
+		//Create Main panel layout
+		
+		JSeparator s1 = new JSeparator(SwingConstants.VERTICAL), s2 = new JSeparator(SwingConstants.VERTICAL);
+		
+		GroupLayout panelLayout = new GroupLayout(this);
+		setLayout(panelLayout);
+		panelLayout.setAutoCreateContainerGaps(true);
+		panelLayout.setAutoCreateGaps(true);
+		
+		panelLayout.setHorizontalGroup(panelLayout.createSequentialGroup()
+				.addComponent(courseSelectionPanel, 300, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addComponent(s1,  GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addComponent(quizSelectionPanel)
+				.addComponent(s2,  GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addComponent(quizControlPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE));
+		
+		panelLayout.setVerticalGroup(panelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+				.addComponent(courseSelectionPanel)
+				.addComponent(s1)
+				.addComponent(quizSelectionPanel)
+				.addComponent(s2)
+				.addComponent(quizControlPanel));
+	
+		
+		/*
 		JPanel container = new JPanel();// panel you have to add in the frame "container"
+		container.setBackground(Color.red);
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -206,13 +347,73 @@ public class CourseQuiz extends JPanel implements ActionListener {
 		panel1.setLayout(groupLayout_1);
 		container.setLayout(gl_container);
 		setLayout(groupLayout);
-
+		*/
 	}
-
+	
+	public void refreshContent(){	
+		currentUser = app.getActiveUser();
+		currentUser.loadCourse();
+		
+		this.courseList.setListData(getCourseNames(currentUser));
+		this.quizList.setListData(new String[] {});
+		this.quizControlPanel.setVisible(false);
+		this.revalidate();
+	}
+	
+	private String[] getCourseNames(User user){
+		List<Course> courses = user.getCourse();
+		String[] courseNames = new String[courses.size()];
+		for(int i = 0; i < courses.size(); i++){
+			courseNames[i] = courses.get(i).name;
+		}
+		return courseNames;
+	}
+	
+	private String[] getQuizNames(Course course){
+		List<Quiz> quizzes = course.getQuizs();
+		String[] quizNames = new String[quizzes.size()];
+		for(int i = 0; i < quizzes.size(); i++){
+			quizNames[i] = quizzes.get(i).getName();
+		}
+		return quizNames;
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) // add buttons functionality here
 	{
 		
+		
+	}
+
+	@Override
+	public void valueChanged(ListSelectionEvent arg0) {
+		if(arg0.getValueIsAdjusting())
+			return;
+		
+		JList list = (JList)arg0.getSource();
+		
+		if(list == courseList){
+			List<Course> courses = currentUser.getCourse();
+			for(Course course : courses){
+				if(course.name == (String)courseList.getSelectedValue()){
+					currentCourse = course;
+					break;
+				}
+			}
+			quizList.setListData(getQuizNames(currentCourse));
+		} else if(list == quizList){
+			List<Quiz> quizzes = currentCourse.getQuizs();
+			for(Quiz quiz : quizzes){
+				if(quiz.getName() == (String)quizList.getSelectedValue()){
+					currentQuiz = quiz;
+					break;
+				}
+			}
+			this.quizControlPanel.setVisible(true);
+			this.courseNameLabel.setText(currentCourse.name);
+			this.quizNameLabel.setText(currentQuiz.getName());
+			this.revalidate();
+		}
 		
 	}
 }

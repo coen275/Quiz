@@ -15,6 +15,17 @@ public class App extends JFrame {
 	private JButton signoutButton;
 
 	private JPanel currentPanel;
+
+	private CardLayout cardLayout;
+	
+	private Map<String, JPanel> panels;
+	
+	private CourseQuiz courseQuiz;
+	
+	private static final String LOGIN_PANEL = "LoginPanel";
+	private static final String CREATE_ACCOUNT_PANEL = "CreateAccountPanel";
+	private static final String SELECT_QUIZ_PANEL = "SelectQuizPanel";
+	private static final String TAKE_QUIZ_PANEL = "TakeQuizPanel";
 	
 	private static final String NOT_SIGNED_IN_MSG = "You are not logged in.";
 	
@@ -44,11 +55,24 @@ public class App extends JFrame {
 		toolbar.addSeparator();
 		toolbar.add(signoutButton);
 		
-		currentPanel = new Login(this);
+		cardLayout = new CardLayout();
+		currentPanel = new JPanel(cardLayout);
+		
+		currentPanel.add(new Login(this), LOGIN_PANEL);
+		currentPanel.add(new CreateAccount(this), CREATE_ACCOUNT_PANEL);
+		courseQuiz = new CourseQuiz(this);
+		currentPanel.add(courseQuiz, SELECT_QUIZ_PANEL);
+		currentPanel.add(new Takequiz(), TAKE_QUIZ_PANEL);
+		
+		setActiveUser(new Student("Paul", "1111", "student"));
+		cardLayout.show(currentPanel, SELECT_QUIZ_PANEL);
+		courseQuiz.refreshContent();
+		
 		
 		//Add GUI Components
 		container.add(toolbar, BorderLayout.PAGE_START);
 		container.add(currentPanel, BorderLayout.CENTER);
+
 		
 		//JFrame settings
 		setSize(1080, 720);
@@ -63,17 +87,25 @@ public class App extends JFrame {
 		
 		revalidate();
 		//print all the courses' info after login
-		testLoadCourseInUserClass(currentUser);
+		//testLoadCourseInUserClass(currentUser);
 		//student submits the quiz
 //		currentUser.submitResult(currentUser.getUsername(), selectAnswer(currentUser));
+	}
+	
+	public User getActiveUser(){
+		return currentUser;
+	}
+	
+	public void createAccount(){
+		setPanel(CREATE_ACCOUNT_PANEL);
 	}
 	
 	public void logout() {
 		setActiveUser(null);
 	}
 	
-	public void setPanel(JPanel panel){
-		currentPanel = panel;
+	private void setPanel(String key){
+		cardLayout.show(currentPanel, key);
 		revalidate();
 	}
 	
