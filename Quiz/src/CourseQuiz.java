@@ -30,6 +30,9 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 	private JPanel quizControlPanel;
 	private JLabel courseNameLabel, quizNameLabel;
 	
+	private JButton takeQuizButton;
+	private JButton viewResultsButton;
+	
 	private App app;
 	private User currentUser;
 	private Course currentCourse;
@@ -118,12 +121,15 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 		courseNameLabel.setFont(headerFont);
 		quizNameLabel = new JLabel("<Quiz Name>");
 		quizNameLabel.setFont(subHeaderFont);
-		JButton takeQuizButton = new JButton("Take Quiz");
-		JButton viewResultsButton = new JButton("View Results");
+		takeQuizButton = new JButton("Take Quiz");
+		takeQuizButton.addActionListener(this);
+		viewResultsButton = new JButton("View Results");
+		viewResultsButton.addActionListener(this);
 		
 		//Create Quiz Controls Layout
 		GroupLayout quizControlLayout = new GroupLayout(quizControlPanel);
 		quizControlPanel.setLayout(quizControlLayout);
+		
 		quizControlLayout.setAutoCreateGaps(true);
 		quizControlLayout.setHorizontalGroup(quizControlLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
 				.addComponent(courseNameLabel)
@@ -381,7 +387,13 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 	@Override
 	public void actionPerformed(ActionEvent e) // add buttons functionality here
 	{
+		JButton src = (JButton)e.getSource();
 		
+		if(src == this.takeQuizButton){
+			
+		}else if(src == this.viewResultsButton){
+			
+		}
 		
 	}
 

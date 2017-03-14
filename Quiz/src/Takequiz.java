@@ -1,23 +1,101 @@
 //package experiement_swing;
 
 import javax.swing.JPanel;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.GroupLayout.Group;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JRadioButton;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+
 import java.awt.event.ActionListener;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import javax.swing.JButton;
 
 public class Takequiz extends JPanel implements ActionListener{
-
+	
+	private Quiz currentQuiz;
+	
+	private JLabel quizNameHeader;
+	private JLabel questionLabel;
+	
+	private final Font headerFont = new Font(Font.DIALOG, Font.BOLD, 30);
+	private final Font subHeaderFont = new Font(Font.DIALOG, Font.BOLD, 26);
+	
+	
+	private class ListRenderer extends DefaultListCellRenderer {
+		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+		        JRadioButton button = new JRadioButton((String)value);
+		        button.setSelected(isSelected);
+				button.setFont(new Font("Ariel", Font.PLAIN, 20));
+		        return button;
+		    }
+	}
+	
 	/**
 	 * Create the panel.
 	 */
 	public Takequiz() {
 		
-		JPanel container = new JPanel();// add this panel to the frame
+		quizNameHeader = new JLabel("<Quiz Name>", SwingConstants.CENTER);
+		quizNameHeader.setPreferredSize(new Dimension(1080, 50));
+		quizNameHeader.setFont(headerFont);
+		
+		questionLabel = new JLabel("<Question ehjsafhjsakshf dsalfjhkjlsahsf>", SwingConstants.CENTER);
+		questionLabel.setPreferredSize(new Dimension(1080, 50));
+		questionLabel.setFont(subHeaderFont);
+		
+		JList answerList = new JList();
+		answerList.setListData(new String[] { "A1", "A2", "A3"});
+		answerList.setCellRenderer(new ListRenderer());
+		answerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
+		JButton nextButton = new JButton("Next Question");
+		JButton prevButton = new JButton("Previous Question");
+		
+		GroupLayout panelLayout = new GroupLayout(this);
+		this.setLayout(panelLayout);
+		panelLayout.setAutoCreateContainerGaps(true);
+		panelLayout.setAutoCreateGaps(true);
+		
+		panelLayout.setHorizontalGroup(panelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+				.addComponent(quizNameHeader, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addComponent(questionLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addGroup(panelLayout.createSequentialGroup()
+						.addPreferredGap(ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+						.addComponent(answerList)
+						.addPreferredGap(ComponentPlacement.RELATED, 38, Short.MAX_VALUE))
+				.addGroup(panelLayout.createSequentialGroup()
+						.addPreferredGap(ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+						.addComponent(prevButton)
+						.addGap(250)
+						.addComponent(nextButton)
+						.addPreferredGap(ComponentPlacement.RELATED, 38, Short.MAX_VALUE)));
+		
+		panelLayout.setVerticalGroup(panelLayout.createSequentialGroup()
+				.addPreferredGap(ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+				.addComponent(quizNameHeader)
+				.addGap(50)
+				.addComponent(questionLabel)
+				.addGap(50)
+				.addComponent(answerList)
+				.addGap(100)
+				.addGroup(panelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+						.addComponent(prevButton)
+						.addComponent(nextButton))
+				.addPreferredGap(ComponentPlacement.RELATED, 200, Short.MAX_VALUE));
+		
+		
+		
+		/*JPanel container = new JPanel();// add this panel to the frame
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.TRAILING)
@@ -105,7 +183,14 @@ public class Takequiz extends JPanel implements ActionListener{
 		);
 		container.setLayout(gl_container);
 		setLayout(groupLayout);
-
+		*/
+	}
+	
+	public void takeQuiz(User user, Quiz quiz){
+		quizNameHeader.setText(quiz.getName());
+		Question q = quiz.getQuestions().get(0);
+		questionLabel.setText(q.getQuestion());
+		
 	}
 
 	@Override

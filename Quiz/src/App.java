@@ -21,6 +21,7 @@ public class App extends JFrame {
 	private Map<String, JPanel> panels;
 	
 	private CourseQuiz courseQuiz;
+	private Takequiz takeQuizPanel;
 	
 	private static final String LOGIN_PANEL = "LoginPanel";
 	private static final String CREATE_ACCOUNT_PANEL = "CreateAccountPanel";
@@ -62,10 +63,12 @@ public class App extends JFrame {
 		currentPanel.add(new CreateAccount(this), CREATE_ACCOUNT_PANEL);
 		courseQuiz = new CourseQuiz(this);
 		currentPanel.add(courseQuiz, SELECT_QUIZ_PANEL);
-		currentPanel.add(new Takequiz(), TAKE_QUIZ_PANEL);
+		
+		takeQuizPanel = new Takequiz();
+		currentPanel.add(takeQuizPanel, TAKE_QUIZ_PANEL);
 		
 		setActiveUser(new Student("Paul", "1111", "student"));
-		cardLayout.show(currentPanel, SELECT_QUIZ_PANEL);
+		cardLayout.show(currentPanel, TAKE_QUIZ_PANEL);
 		courseQuiz.refreshContent();
 		
 		
@@ -75,6 +78,7 @@ public class App extends JFrame {
 
 		
 		//JFrame settings
+		setResizable(false);
 		setSize(1080, 720);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
@@ -90,6 +94,11 @@ public class App extends JFrame {
 		//testLoadCourseInUserClass(currentUser);
 		//student submits the quiz
 //		currentUser.submitResult(currentUser.getUsername(), selectAnswer(currentUser));
+	}
+	
+	public void takeQuiz(Quiz quiz){
+		cardLayout.show(currentPanel, TAKE_QUIZ_PANEL);
+		takeQuizPanel.takeQuiz(getActiveUser(), quiz);
 	}
 	
 	public User getActiveUser(){
