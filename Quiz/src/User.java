@@ -77,9 +77,10 @@ public abstract class User {
 	}
 	
 	public void deleteCourse(String courseName) {
-		for(Course c : courses) {
-			if(c.getCourseName() == courseName && c.getQuizs().size() > 0) {
-				   courses.remove(c);
+		for (Course c : courses) {
+			if (c.getCourseName().equals(courseName) && c.getQuizs().size() > 0) {
+				courses.remove(c);
+				Database.deleteCourse(courseName);
 			}
 		}
 	}

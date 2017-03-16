@@ -22,15 +22,6 @@ public class Teacher extends User {
 		
 	}
 	
-	public void deleteCourse(String courseName) {
-		for (Course course : courses) {
-			if (course.getCourseName().equals(courseName)) {
-				courses.remove(course);
-				Database.deleteCourse(courseName);
-			}
-		}
-	}
-	
 
 
 }
