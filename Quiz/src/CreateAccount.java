@@ -125,6 +125,8 @@ public class CreateAccount extends JPanel implements ActionListener {
 				errorLabel.setText("Password fields do not match");
 			} else if(accountType == "Select"){
 				errorLabel.setText("Account type not selected");
+			} else if (Database.isUserExist(username)){
+				errorLabel.setText("Account:" + username +" is existing");
 			} else {
 				Database.createAccount(username, password, accountType.toLowerCase());
 				accountType = accountType.toLowerCase();
