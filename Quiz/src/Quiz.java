@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class Quiz {
+public class Quiz implements Cloneable {
 	private String name;
 	private long accessTime;
 	private long quizTime;
@@ -22,6 +22,7 @@ public class Quiz {
 	 */
 	public Quiz(String name) {
 		this.name = name;
+		this.questions = new ArrayList<Question>();
 	}
 
 	public String getName() {
@@ -55,6 +56,14 @@ public class Quiz {
 	
 	public void setQuestions(List<Question> questions) {
 		this.questions = questions;
+	}
+	
+	public void addQuestion(Question question){
+		this.questions.add(question);
+	}
+	
+	public void removeQuestion(Question question){
+		this.questions.remove(question);
 	}
 	
 	/**
@@ -105,5 +114,15 @@ public class Quiz {
 		printQuizTime();
 	}
 	
-	
+	public Quiz clone(){
+		Quiz quiz = new Quiz(this.name);
+		quiz.setAccessTime(this.accessTime);
+		quiz.setQuizTime(this.quizTime);
+		List<Question> questionList = new ArrayList<Question>();
+		for(Question a : this.questions){
+			questionList.add( a.clone());
+		}
+		quiz.setQuestions(questionList);
+		return quiz;
+	}
 }

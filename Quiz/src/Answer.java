@@ -1,5 +1,5 @@
 
-public class Answer {
+public class Answer implements Cloneable {
 	private int answerID;
 	private String answerText;
 	private boolean isCorrect;
@@ -22,6 +22,10 @@ public class Answer {
 		isSelected = true;
 	}
 	
+	public void deselectAnswer(){
+		isSelected = false;
+	}
+	
 	public boolean isSelected(){
 		return isSelected;
 	}
@@ -40,5 +44,14 @@ public class Answer {
 	
 	public void printAnswerInfo(){
 		System.out.println("AnswerID: " + answerID + ", AnswerText: " + answerText + ", isCorrect: " + isCorrect);
+	}
+	
+	public Answer clone(){
+		return new Answer(this.answerID, this.answerText, this.isCorrect);
+	}
+	
+	@Override
+	public String toString(){
+		return answerText;
 	}
 }

@@ -54,6 +54,14 @@ public abstract class User {
 		return courses;
 	}
 	
+	public Course[] getCourseArray(){
+		Course[] courseArray = new Course[courses.size()];
+		for(int i = 0; i < courseArray.length; i++){
+			courseArray[i] = courses.get(i);
+		}
+		return courseArray;
+	}
+	
 	public static boolean isValidCode(String s) {
 		boolean isValid = true;
 		if (s.length() == 4) {
@@ -70,8 +78,7 @@ public abstract class User {
 	
 	public void deleteCourse(String courseName) {
 		for(Course c : courses) {
-			if(c.getCourseName() == courseName &&
-			   c.getQuizs().size() > 0) {
+			if(c.getCourseName() == courseName && c.getQuizs().size() > 0) {
 				   courses.remove(c);
 			}
 		}

@@ -99,6 +99,8 @@ public class Login extends JPanel implements ActionListener {
 				} else if (type.equals("teacher")) {
 					app.setActiveUser(new Teacher(username, password, type));
 				}
+				this.usernameTextField.setText("");
+				this.passwordTextField.setText("");
 			} else {
 				setErrorMessage("Username or Password is invalid.");
 			}

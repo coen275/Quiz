@@ -22,11 +22,13 @@ public class App extends JFrame {
 	
 	private CourseQuiz courseQuiz;
 	private Takequiz takeQuizPanel;
+	private CreateQuiz createQuizPanel;
 	
 	private static final String LOGIN_PANEL = "LoginPanel";
 	private static final String CREATE_ACCOUNT_PANEL = "CreateAccountPanel";
 	private static final String SELECT_QUIZ_PANEL = "SelectQuizPanel";
 	private static final String TAKE_QUIZ_PANEL = "TakeQuizPanel";
+	private static final String CREATE_QUIZ_PANEL = "CreateQuizPanel";
 	
 	private static final String NOT_SIGNED_IN_MSG = "You are not logged in.";
 	
@@ -63,14 +65,12 @@ public class App extends JFrame {
 		currentPanel.add(new CreateAccount(this), CREATE_ACCOUNT_PANEL);
 		courseQuiz = new CourseQuiz(this);
 		currentPanel.add(courseQuiz, SELECT_QUIZ_PANEL);
-		
-		takeQuizPanel = new Takequiz();
+		takeQuizPanel = new Takequiz(this);
 		currentPanel.add(takeQuizPanel, TAKE_QUIZ_PANEL);
+		createQuizPanel = new CreateQuiz(this);
+		currentPanel.add(createQuizPanel, CREATE_QUIZ_PANEL);
 		
-		setActiveUser(new Student("Paul", "1111", "student"));
-		cardLayout.show(currentPanel, TAKE_QUIZ_PANEL);
-		courseQuiz.refreshContent();
-		
+		cardLayout.show(currentPanel, LOGIN_PANEL);		
 		
 		//Add GUI Components
 		container.add(toolbar, BorderLayout.PAGE_START);
@@ -88,7 +88,11 @@ public class App extends JFrame {
 		currentUser = user;
 		userNameLabel.setText(user != null ? user.username : NOT_SIGNED_IN_MSG);
 		signoutButton.setEnabled(user != null);
-		
+		if(currentUser == null){
+			cardLayout.show(currentPanel, LOGIN_PANEL);		
+		} else {
+			mainMenu();
+		}
 		revalidate();
 		//print all the courses' info after login
 		//testLoadCourseInUserClass(currentUser);
@@ -99,6 +103,16 @@ public class App extends JFrame {
 	public void takeQuiz(Quiz quiz){
 		cardLayout.show(currentPanel, TAKE_QUIZ_PANEL);
 		takeQuizPanel.takeQuiz(getActiveUser(), quiz);
+	}
+	
+	public void mainMenu(){
+		cardLayout.show(currentPanel, SELECT_QUIZ_PANEL);
+		courseQuiz.refreshContent();
+	}
+	
+	public void createQuiz(Course course){
+		cardLayout.show(currentPanel, CREATE_QUIZ_PANEL);
+		createQuizPanel.setCourse(course);
 	}
 	
 	public User getActiveUser(){
@@ -116,19 +130,6 @@ public class App extends JFrame {
 	private void setPanel(String key){
 		cardLayout.show(currentPanel, key);
 		revalidate();
-	}
-	
-	/*
-	 * I think this function could be in the CreateAccountUI class so that it can properly
-	 * display errors if the account already exists
-	 */
-	public void signUp(String username, String password, String confirm, String type) {
-		if (password.equals(confirm)) {
-			Database.createAccount(username, password, type);
-			System.out.printf("%s Account: %s is created", type, username);
-		} else {
-			System.out.println("Password is not correct");
-		}	
 	}
 	
 	//Temporary

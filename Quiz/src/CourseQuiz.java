@@ -1,3 +1,4 @@
+
 //package experiement_swing;
 
 import java.awt.Color;
@@ -10,7 +11,9 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JTextField;
@@ -19,413 +22,288 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class CourseQuiz extends JPanel implements ActionListener, ListSelectionListener {
-	private final JTextField accessCodeTextField;
-
 	private JList courseList;
 	private JList quizList;
-	
+	private JList resultsList;
+
 	private JPanel quizControlPanel;
-	private JLabel courseNameLabel, quizNameLabel;
-	
+	private JLabel courseNameLabel, quizNameLabel, accessCodeLabel, newCourseLabel, resultsLabel;
+	private JTextField accessCodeTextField;
+	private JTextField courseNameTextField;
+
+	private JButton addCourseButton;
 	private JButton takeQuizButton;
 	private JButton viewResultsButton;
-	
+	private JButton addQuizButton;
+
 	private App app;
 	private User currentUser;
 	private Course currentCourse;
 	private Quiz currentQuiz;
-	
+
 	private final Font headerFont = new Font(Font.DIALOG, Font.BOLD, 30);
-	private final Font subHeaderFont = new Font(Font.DIALOG, Font.BOLD, 26);
-	
+	private final Font subHeaderFont = new Font(Font.DIALOG, Font.BOLD, 24);
+
 	private class ListRenderer extends DefaultListCellRenderer {
-		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-		        JLabel label = (JLabel)super.getListCellRendererComponent(
-		            list,value,index,isSelected,cellHasFocus);
-		        Font font = new Font("Ariel", Font.PLAIN, 20);
-		        label.setFont(font);
-		        return label;
-		    }
+		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+				boolean cellHasFocus) {
+			JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+			Font font = new Font("Ariel", Font.PLAIN, 20);
+			label.setFont(font);
+			return label;
+		}
 	}
-	
+
 	/**
 	 * Create the panel.
 	 */
 	public CourseQuiz(App app) {
 		this.app = app;
-		
-		//Create Course Selection Components
-		JPanel courseSelectionPanel = new JPanel();		
-		
+
+		// Create Course Selection Components
+		JPanel courseSelectionPanel = new JPanel();
+
 		JLabel courseSelectionHeader = new JLabel("Select Course");
 		courseSelectionHeader.setFont(headerFont);
-		
+
 		courseList = new JList();
 		courseList.setCellRenderer(new ListRenderer());
 		courseList.addListSelectionListener(this);
-		
-		JLabel addCourseLabel = new JLabel("Access Code");
+
+		newCourseLabel = new JLabel("Course Name ");
+		courseNameTextField = new JTextField();
+		accessCodeLabel = new JLabel("Access Code ");
 		accessCodeTextField = new JTextField();
-		JButton addCourseButton = new JButton("Add Course");
-		
-		//Create Course Selection Layout
+		addCourseButton = new JButton("Add Course");
+		addCourseButton.addActionListener(this);
+
+		// Create Course Selection Layout
 		GroupLayout courseSelectionLayout = new GroupLayout(courseSelectionPanel);
 		courseSelectionPanel.setLayout(courseSelectionLayout);
 		courseSelectionLayout.setAutoCreateGaps(true);
 		courseSelectionLayout.setHorizontalGroup(courseSelectionLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
-				.addComponent(courseSelectionHeader)
-				.addComponent(courseList)
-				.addGroup(courseSelectionLayout.createSequentialGroup()
-						.addComponent(addCourseLabel)
+				.addComponent(courseSelectionHeader).addComponent(courseList)
+				.addGroup(courseSelectionLayout.createSequentialGroup().addComponent(newCourseLabel)
+						.addComponent(courseNameTextField))
+				.addGroup(courseSelectionLayout.createSequentialGroup().addComponent(accessCodeLabel)
 						.addComponent(accessCodeTextField))
 				.addComponent(addCourseButton));
-		
+
 		courseSelectionLayout.setVerticalGroup(courseSelectionLayout.createSequentialGroup()
-				.addComponent(courseSelectionHeader)
-				.addComponent(courseList)
-				.addGap(18)
+				.addComponent(courseSelectionHeader).addComponent(courseList).addGap(18)
 				.addGroup(courseSelectionLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-						.addComponent(addCourseLabel)
-						.addComponent(accessCodeTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(newCourseLabel).addComponent(courseNameTextField, GroupLayout.PREFERRED_SIZE,
+								GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+				.addGroup(courseSelectionLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+						.addComponent(accessCodeLabel).addComponent(accessCodeTextField, GroupLayout.PREFERRED_SIZE,
+								GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 				.addComponent(addCourseButton));
-		
-		//Create Quiz Selection Components
+
+		// Create Quiz Selection Components
 		JPanel quizSelectionPanel = new JPanel();
-		
-		JLabel quizSelectionHeader = new JLabel("Select Course");
+
+		JLabel quizSelectionHeader = new JLabel("Select Quiz");
 		quizSelectionHeader.setFont(headerFont);
-		
+
 		quizList = new JList();
 		quizList.setCellRenderer(new ListRenderer());
 		quizList.addListSelectionListener(this);
-		
-		//Create Quiz Selection Layout
+
+		addQuizButton = new JButton("Add Quiz");
+		addQuizButton.addActionListener(this);
+
+		// Create Quiz Selection Layout
 		GroupLayout quizSelectionLayout = new GroupLayout(quizSelectionPanel);
 		quizSelectionPanel.setLayout(quizSelectionLayout);
 		quizSelectionLayout.setAutoCreateGaps(true);
 		quizSelectionLayout.setHorizontalGroup(quizSelectionLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
-				.addComponent(quizSelectionHeader)
-				.addComponent(quizList));
-		
+				.addComponent(quizSelectionHeader).addComponent(quizList).addComponent(addQuizButton));
+
 		quizSelectionLayout.setVerticalGroup(quizSelectionLayout.createSequentialGroup()
-				.addComponent(quizSelectionHeader)
-				.addComponent(quizList));
-		
-		//Create Quiz Control Panel Components
-		quizControlPanel = new JPanel();		
-		
+				.addComponent(quizSelectionHeader).addComponent(quizList).addGap(18).addComponent(addQuizButton));
+
+		// Create Quiz Control Panel Components
+		quizControlPanel = new JPanel();
+
 		courseNameLabel = new JLabel("<Course Name>");
 		courseNameLabel.setFont(headerFont);
 		quizNameLabel = new JLabel("<Quiz Name>");
 		quizNameLabel.setFont(subHeaderFont);
 		takeQuizButton = new JButton("Take Quiz");
 		takeQuizButton.addActionListener(this);
-		viewResultsButton = new JButton("View Results");
-		viewResultsButton.addActionListener(this);
-		
-		//Create Quiz Controls Layout
+		resultsLabel = new JLabel("");
+		resultsLabel.setFont(subHeaderFont);
+		resultsList = new JList();
+		resultsList.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
+
+		// Create Quiz Controls Layout
 		GroupLayout quizControlLayout = new GroupLayout(quizControlPanel);
 		quizControlPanel.setLayout(quizControlLayout);
-		
+
 		quizControlLayout.setAutoCreateGaps(true);
 		quizControlLayout.setHorizontalGroup(quizControlLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
-				.addComponent(courseNameLabel)
-				.addComponent(quizNameLabel)
-				.addGroup(quizControlLayout.createSequentialGroup()
-						.addComponent(takeQuizButton)
-						.addComponent(viewResultsButton)));
-		
-		quizControlLayout.setVerticalGroup(quizControlLayout.createSequentialGroup()
-				.addComponent(courseNameLabel)
-				.addComponent(quizNameLabel)
-				.addGroup(quizControlLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-						.addComponent(takeQuizButton)
-						.addComponent(viewResultsButton)));
-		
-		//Create Main panel layout
-		
+				.addComponent(courseNameLabel).addComponent(quizNameLabel).addComponent(takeQuizButton)
+				.addComponent(resultsLabel).addComponent(resultsList));
+
+		quizControlLayout.setVerticalGroup(
+				quizControlLayout.createSequentialGroup().addComponent(courseNameLabel).addComponent(quizNameLabel)
+						.addComponent(takeQuizButton).addComponent(resultsLabel).addComponent(resultsList));
+
+		// Create Main panel layout
+
 		JSeparator s1 = new JSeparator(SwingConstants.VERTICAL), s2 = new JSeparator(SwingConstants.VERTICAL);
-		
+
 		GroupLayout panelLayout = new GroupLayout(this);
 		setLayout(panelLayout);
 		panelLayout.setAutoCreateContainerGaps(true);
 		panelLayout.setAutoCreateGaps(true);
-		
+
 		panelLayout.setHorizontalGroup(panelLayout.createSequentialGroup()
 				.addComponent(courseSelectionPanel, 300, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-				.addComponent(s1,  GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addComponent(s1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 				.addComponent(quizSelectionPanel)
-				.addComponent(s2,  GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-				.addComponent(quizControlPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE));
-		
+				.addComponent(s2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addComponent(quizControlPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+						GroupLayout.PREFERRED_SIZE));
+
 		panelLayout.setVerticalGroup(panelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addComponent(courseSelectionPanel)
-				.addComponent(s1)
-				.addComponent(quizSelectionPanel)
-				.addComponent(s2)
+				.addComponent(courseSelectionPanel).addComponent(s1).addComponent(quizSelectionPanel).addComponent(s2)
 				.addComponent(quizControlPanel));
-	
-		
-		/*
-		JPanel container = new JPanel();// panel you have to add in the frame "container"
-		container.setBackground(Color.red);
-		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(container, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-					.addContainerGap())
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(container, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-		);
-		
-		JPanel panel1 = new JPanel();// panel, contains all course information
-		
-		JPanel panel2 = new JPanel();
-		
-		JButton takequiz = new JButton("Take quiz");// take quiz button
-		takequiz.addActionListener(this);
-		
-		JButton viewresult = new JButton("View Result");// view result button
-		viewresult.addActionListener(this);
-		
-		GroupLayout gl_container = new GroupLayout(container);
-		gl_container.setHorizontalGroup(
-			gl_container.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_container.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(panel1, GroupLayout.PREFERRED_SIZE, 197, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(panel2, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-					.addGap(39)
-					.addGroup(gl_container.createParallelGroup(Alignment.TRAILING)
-						.addComponent(viewresult)
-						.addComponent(takequiz))
-					.addContainerGap(40, Short.MAX_VALUE))
-		);
-		gl_container.setVerticalGroup(
-			gl_container.createParallelGroup(Alignment.TRAILING)
-				.addGroup(gl_container.createSequentialGroup()
-					.addGroup(gl_container.createParallelGroup(Alignment.TRAILING)
-						.addGroup(Alignment.LEADING, gl_container.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(panel2, GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE))
-						.addComponent(panel1, GroupLayout.DEFAULT_SIZE, 486, Short.MAX_VALUE)
-						.addGroup(Alignment.LEADING, gl_container.createSequentialGroup()
-							.addGap(197)
-							.addComponent(takequiz)
-							.addGap(37)
-							.addComponent(viewresult)))
-					.addContainerGap())
-		);
-		
-		JLabel quiz = new JLabel("Quizes");
-		
-		JButton quiz1 = new JButton("Quiz 1");
-		quiz1.addActionListener(this);
-		
-		JButton quiz2 = new JButton("Quiz 2");
-		quiz2.addActionListener(this);
-		JButton quiz3 = new JButton("Quiz 3");
-		quiz3.addActionListener(this);
-		
-		JButton quiz4 = new JButton("Quiz 4");
-		quiz4.addActionListener(this);
-		
-		GroupLayout gl_panel2 = new GroupLayout(panel2);
-		gl_panel2.setHorizontalGroup(
-			gl_panel2.createParallelGroup(Alignment.TRAILING)
-				.addGroup(gl_panel2.createSequentialGroup()
-					.addGroup(gl_panel2.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel2.createSequentialGroup()
-							.addGap(35)
-							.addComponent(quiz, GroupLayout.PREFERRED_SIZE, 62, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_panel2.createSequentialGroup()
-							.addGap(23)
-							.addGroup(gl_panel2.createParallelGroup(Alignment.LEADING, false)
-								.addComponent(quiz1)
-								.addComponent(quiz2, GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
-								.addComponent(quiz3, 0, 0, Short.MAX_VALUE)
-								.addComponent(quiz4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-					.addContainerGap(22, Short.MAX_VALUE))
-		);
-		gl_panel2.setVerticalGroup(
-			gl_panel2.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel2.createSequentialGroup()
-					.addGap(29)
-					.addComponent(quiz)
-					.addGap(18)
-					.addComponent(quiz1)
-					.addGap(18)
-					.addComponent(quiz2)
-					.addGap(18)
-					.addComponent(quiz3)
-					.addGap(18)
-					.addComponent(quiz4)
-					.addContainerGap(247, Short.MAX_VALUE))
-		);
-		panel2.setLayout(gl_panel2);
-		
-		JLabel Courses = new JLabel("Courses");// course label
-		Courses.setVerticalAlignment(SwingConstants.TOP);
-		
-		JButton course1 = new JButton("Couse1 Name");// first course button, add name
-		course1.addActionListener(this);
-		
-		JButton course2 = new JButton("course2 Name");// second course button,add name
-		course2.addActionListener(this);
-		
-		JButton course3 = new JButton("Course3 Name");// third course button,add name
-		course2.addActionListener(this);
-		
-		JButton course4 = new JButton("Course4 Name");// fourth course button,add name
-		course4.addActionListener(this);
-		
-		accesscode.setColumns(10);
-		
-		JLabel addcourse = new JLabel("Add Course");
-		
-		JLabel access = new JLabel("Access code");
-		
-		JButton addbutton = new JButton("ADD");// add button
-		addbutton.addActionListener(this);
-		
-		GroupLayout groupLayout_1 = new GroupLayout(panel1);
-		groupLayout_1.setHorizontalGroup(
-			groupLayout_1.createParallelGroup(Alignment.TRAILING)
-				.addGroup(groupLayout_1.createSequentialGroup()
-					.addGroup(groupLayout_1.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout_1.createSequentialGroup()
-							.addContainerGap(12, Short.MAX_VALUE)
-							.addGroup(groupLayout_1.createParallelGroup(Alignment.TRAILING)
-								.addComponent(addcourse, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE)
-								.addGroup(groupLayout_1.createSequentialGroup()
-									.addComponent(access)
-									.addGap(3)
-									.addComponent(accesscode, GroupLayout.PREFERRED_SIZE, 96, GroupLayout.PREFERRED_SIZE))
-								.addGroup(groupLayout_1.createSequentialGroup()
-									.addComponent(Courses, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
-									.addGap(66))))
-						.addGroup(groupLayout_1.createSequentialGroup()
-							.addGap(16)
-							.addGroup(groupLayout_1.createParallelGroup(Alignment.LEADING, false)
-								.addComponent(course3, GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
-								.addComponent(course2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(course1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(course4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-							.addPreferredGap(ComponentPlacement.RELATED, 28, Short.MAX_VALUE))
-						.addGroup(groupLayout_1.createSequentialGroup()
-							.addGap(30)
-							.addComponent(addbutton)))
-					.addContainerGap())
-		);
-		groupLayout_1.setVerticalGroup(
-			groupLayout_1.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout_1.createSequentialGroup()
-					.addGap(29)
-					.addComponent(Courses)
-					.addGap(18)
-					.addComponent(course1)
-					.addGap(18)
-					.addComponent(course2)
-					.addGap(18)
-					.addComponent(course3)
-					.addGap(18)
-					.addComponent(course4)
-					.addGap(92)
-					.addComponent(addcourse)
-					.addGap(18)
-					.addGroup(groupLayout_1.createParallelGroup(Alignment.BASELINE)
-						.addComponent(access)
-						.addComponent(accesscode, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(28)
-					.addComponent(addbutton)
-					.addContainerGap(38, Short.MAX_VALUE))
-		);
-		panel1.setLayout(groupLayout_1);
-		container.setLayout(gl_container);
-		setLayout(groupLayout);
-		*/
 	}
-	
-	public void refreshContent(){	
+
+	public void refreshContent() {
 		currentUser = app.getActiveUser();
 		currentUser.loadCourse();
-		
-		this.courseList.setListData(getCourseNames(currentUser));
+
+		this.courseList.setListData(currentUser.getCourseArray());
 		this.quizList.setListData(new String[] {});
 		this.quizControlPanel.setVisible(false);
+
+		boolean isTeacher = currentUser.getType().equals("teacher");
+
+		this.newCourseLabel.setVisible(!isTeacher);
+		this.courseNameTextField.setVisible(!isTeacher);
+		this.accessCodeTextField.setVisible(!isTeacher);
+		this.accessCodeLabel.setVisible(!isTeacher);
+		this.addQuizButton.setVisible(isTeacher);
+
 		this.revalidate();
 	}
-	
-	private String[] getCourseNames(User user){
-		List<Course> courses = user.getCourse();
-		String[] courseNames = new String[courses.size()];
-		for(int i = 0; i < courses.size(); i++){
-			courseNames[i] = courses.get(i).name;
-		}
-		return courseNames;
-	}
-	
-	private String[] getQuizNames(Course course){
+
+	private String[] getQuizNames(Course course) {
 		List<Quiz> quizzes = course.getQuizs();
 		String[] quizNames = new String[quizzes.size()];
-		for(int i = 0; i < quizzes.size(); i++){
+		for (int i = 0; i < quizzes.size(); i++) {
 			quizNames[i] = quizzes.get(i).getName();
 		}
 		return quizNames;
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) // add buttons functionality here
 	{
-		JButton src = (JButton)e.getSource();
-		
-		if(src == this.takeQuizButton){
-			
-		}else if(src == this.viewResultsButton){
-			
+		JButton src = (JButton) e.getSource();
+
+		if (src == this.takeQuizButton) {
+			app.takeQuiz(currentQuiz.clone());
+		} else if (src == this.viewResultsButton) {
+
+		} else if (src == this.addCourseButton) {
+			if (currentUser.type.equals("teacher")) {
+				String courseName = (String) JOptionPane.showInputDialog(this, "Course Name: ", "Add Course",
+						JOptionPane.PLAIN_MESSAGE);
+				if (courseName != null && courseName.length() > 0) {
+					System.out.println(courseName);
+					Random rng = new Random(System.currentTimeMillis());
+					int accessCode = 1000 + rng.nextInt(9000);
+					currentUser.addCourse(courseName, String.valueOf(accessCode));
+					refreshContent();
+				}
+			} else {
+				String courseName = this.courseNameTextField.getText();
+				String accessCode = this.accessCodeTextField.getText();
+				this.courseNameTextField.setText("");
+				this.accessCodeTextField.setText("");
+				if (courseName != null && courseName.length() > 0 && accessCode != null && accessCode.length() > 0) {
+					currentUser.addCourse(courseName, accessCode);
+					refreshContent();
+				} else {
+					JOptionPane.showMessageDialog(this, "Please enter a course name and access code", "Error",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		} else if (src == this.addQuizButton) {
+			if (currentCourse == null) {
+				JOptionPane.showMessageDialog(this, "Please select a course", "Error", JOptionPane.ERROR_MESSAGE);
+			} else {
+				app.createQuiz(currentCourse);
+			}
 		}
-		
 	}
 
 	@Override
 	public void valueChanged(ListSelectionEvent arg0) {
-		if(arg0.getValueIsAdjusting())
+		if (arg0.getValueIsAdjusting())
 			return;
-		
-		JList list = (JList)arg0.getSource();
-		
-		if(list == courseList){
-			List<Course> courses = currentUser.getCourse();
-			for(Course course : courses){
-				if(course.name == (String)courseList.getSelectedValue()){
-					currentCourse = course;
-					break;
-				}
+
+		JList list = (JList) arg0.getSource();
+
+		if (list == courseList) {
+			currentCourse = (Course) courseList.getSelectedValue();
+			if (currentCourse != null) {
+				quizList.setListData(getQuizNames(currentCourse));
 			}
-			quizList.setListData(getQuizNames(currentCourse));
-		} else if(list == quizList){
+			this.quizControlPanel.setVisible(false);
+		} else if (list == quizList) {
+			if (currentCourse == null) {
+				return;
+			}
 			List<Quiz> quizzes = currentCourse.getQuizs();
-			for(Quiz quiz : quizzes){
-				if(quiz.getName() == (String)quizList.getSelectedValue()){
+			for (Quiz quiz : quizzes) {
+				if (quiz.getName() == (String) quizList.getSelectedValue()) {
 					currentQuiz = quiz;
 					break;
 				}
 			}
+
 			this.quizControlPanel.setVisible(true);
+
+			boolean isTeacher = currentUser.getType().equals("teacher");
+			this.takeQuizButton.setVisible(!isTeacher);
+			this.resultsList.setVisible(isTeacher);
+			this.resultsLabel.setVisible(false);
+			if (isTeacher) {
+				List<String> resultLabels = new ArrayList<String>();
+				List<String> users = Database.getQuizTakers(currentCourse.getCourseName(), currentQuiz.getName());
+				for (String username : users) {
+					double score = Database.getStudentScore(currentCourse.getCourseName(), currentQuiz.getName(),
+							currentUser.getUsername());
+					resultLabels.add(String.format("%s's Score: %.1f%%", username, score));
+				}
+				if (resultLabels.size() == 0) {
+					resultLabels.add("No students have taken this quiz");
+				}
+				this.resultsList.setListData(resultLabels.toArray());
+			} else {
+				boolean hasTakenQuiz = Database.hasTakenQuiz(this.currentUser.getUsername(),
+						this.currentQuiz.getName());
+				if (hasTakenQuiz) {
+					double score = Database.getStudentScore(currentCourse.getCourseName(), currentQuiz.getName(),
+							currentUser.getUsername());
+					this.resultsLabel.setText(String.format("Your Score %.1f%%", score));
+				}
+				this.takeQuizButton.setEnabled(!hasTakenQuiz);
+				this.resultsLabel.setVisible(hasTakenQuiz);
+			}
 			this.courseNameLabel.setText(currentCourse.name);
 			this.quizNameLabel.setText(currentQuiz.getName());
 			this.revalidate();
 		}
-		
+
 	}
 }

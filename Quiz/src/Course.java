@@ -49,9 +49,9 @@ public class Course {
 	 * @param answers
 	 * @param questions
 	 */
-	public void addQuiz(String courseName) {
+	public void addQuiz() {
 		quizs.add(tempQuiz);
-		Database.addQuiz(courseName, tempQuiz);
+		Database.addQuiz(this.name, tempQuiz);
 		tempQuiz = null;
 	}
 	
@@ -77,5 +77,10 @@ public class Course {
 	
 	public void printCourseInfo(){
 		System.out.println("CourseName: " + name + ", AccessCode: " + accessCode);
+	}
+	
+	@Override
+	public String toString(){
+		return String.format("%s (%s)", this.name, this.accessCode);
 	}
 }

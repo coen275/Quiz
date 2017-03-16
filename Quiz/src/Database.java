@@ -362,6 +362,43 @@ public class Database {
 		return result;
 	}
 	
+	public static Boolean hasTakenQuiz(String userName, String quizName){
+		Boolean result = false;
+		try{
+			Connection c = instance.createConnection();
+			Statement stmt = c.createStatement();
+			ResultSet rs = stmt.executeQuery(String.format("SELECT * "
+														+ "FROM QuizResults "
+														+ "JOIN Users ON QuizResults.UserID=Users.UserID "
+														+ "JOIN Quizs ON QuizResults.QuizID=Quizs.QuizID "
+														+ "WHERE QuizName='%s' AND Username='%s'", quizName, userName));
+			result = rs.next();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	public static List<String> getQuizTakers(String courseName, String quizName){
+		List<String> users = new ArrayList<String>();
+		try{
+			Connection c = instance.createConnection();
+			Statement stmt = c.createStatement();			
+			ResultSet rs = stmt.executeQuery(String.format("SELECT Username "
+														+ "FROM QuizResults "
+														+ "JOIN Users ON QuizResults.UserID=Users.UserID "
+														+ "JOIN Quizs ON QuizResults.QuizID=Quizs.QuizID "
+														+ "JOIN Courses ON Courses.CourseID = Quizs.CourseID "
+														+ "WHERE QuizName='%s' AND CourseName='%s'", quizName, courseName));
+			while (rs.next()) {
+				users.add(rs.getString("Username"));
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return users; 	
+	}
+	
 	/**
 	 * Add record to quiz and related tables
 	 * @param courseName

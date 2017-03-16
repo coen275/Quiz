@@ -7,12 +7,20 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.GroupLayout.Group;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -22,18 +30,28 @@ import javax.swing.JButton;
 
 public class Takequiz extends JPanel implements ActionListener{
 	
+	private App app;
 	private Quiz currentQuiz;
+	private User currentUser;
 	
 	private JLabel quizNameHeader;
-	private JLabel questionLabel;
+	private JPanel questionPanel;
+	private CardLayout questionCardLayout;
+	
+	private List<String> questionKeys;
+	private int questionIndex;
+	private String currentQuestionKey;
 	
 	private final Font headerFont = new Font(Font.DIALOG, Font.BOLD, 30);
 	private final Font subHeaderFont = new Font(Font.DIALOG, Font.BOLD, 26);
 	
+	private static final String PREV_BTN_STR = "Prev Question";
+	private static final String NEXT_BTN_STR = "Next Question";
+	private static final String SUBMIT_BTN_STR = "Submit Answers";
 	
 	private class ListRenderer extends DefaultListCellRenderer {
 		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-		        JRadioButton button = new JRadioButton((String)value);
+		        JRadioButton button = new JRadioButton(value.toString());
 		        button.setSelected(isSelected);
 				button.setFont(new Font("Ariel", Font.PLAIN, 20));
 		        return button;
@@ -43,23 +61,28 @@ public class Takequiz extends JPanel implements ActionListener{
 	/**
 	 * Create the panel.
 	 */
-	public Takequiz() {
+	public Takequiz(App app) {
+		
+		this.app = app;
 		
 		quizNameHeader = new JLabel("<Quiz Name>", SwingConstants.CENTER);
 		quizNameHeader.setPreferredSize(new Dimension(1080, 50));
 		quizNameHeader.setFont(headerFont);
 		
-		questionLabel = new JLabel("<Question ehjsafhjsakshf dsalfjhkjlsahsf>", SwingConstants.CENTER);
-		questionLabel.setPreferredSize(new Dimension(1080, 50));
-		questionLabel.setFont(subHeaderFont);
+		questionCardLayout = new CardLayout();
+		questionPanel = new JPanel();
+		questionPanel.setLayout(questionCardLayout);
+		questionPanel.setPreferredSize(new Dimension(400, 300));
+		questionPanel.setBackground(Color.cyan);
 		
-		JList answerList = new JList();
-		answerList.setListData(new String[] { "A1", "A2", "A3"});
-		answerList.setCellRenderer(new ListRenderer());
-		answerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		
-		JButton nextButton = new JButton("Next Question");
-		JButton prevButton = new JButton("Previous Question");
+		questionKeys = new ArrayList<String>();
+	
+		JButton nextButton = new JButton(NEXT_BTN_STR);
+		nextButton.addActionListener(this);
+		JButton prevButton = new JButton(PREV_BTN_STR);
+		prevButton.addActionListener(this);
+		JButton submitButton = new JButton(SUBMIT_BTN_STR);
+		submitButton.addActionListener(this);
 		
 		GroupLayout panelLayout = new GroupLayout(this);
 		this.setLayout(panelLayout);
@@ -68,135 +91,69 @@ public class Takequiz extends JPanel implements ActionListener{
 		
 		panelLayout.setHorizontalGroup(panelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
 				.addComponent(quizNameHeader, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-				.addComponent(questionLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-				.addGroup(panelLayout.createSequentialGroup()
-						.addPreferredGap(ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
-						.addComponent(answerList)
-						.addPreferredGap(ComponentPlacement.RELATED, 38, Short.MAX_VALUE))
+				.addComponent(questionPanel)
 				.addGroup(panelLayout.createSequentialGroup()
 						.addPreferredGap(ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
 						.addComponent(prevButton)
 						.addGap(250)
 						.addComponent(nextButton)
+						.addComponent(submitButton)
 						.addPreferredGap(ComponentPlacement.RELATED, 38, Short.MAX_VALUE)));
 		
 		panelLayout.setVerticalGroup(panelLayout.createSequentialGroup()
 				.addPreferredGap(ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
 				.addComponent(quizNameHeader)
 				.addGap(50)
-				.addComponent(questionLabel)
-				.addGap(50)
-				.addComponent(answerList)
+				.addComponent(questionPanel)
 				.addGap(100)
 				.addGroup(panelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
 						.addComponent(prevButton)
-						.addComponent(nextButton))
+						.addComponent(nextButton)
+						.addComponent(submitButton))
 				.addPreferredGap(ComponentPlacement.RELATED, 200, Short.MAX_VALUE));
-		
-		
-		
-		/*JPanel container = new JPanel();// add this panel to the frame
-		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(container, GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
-					.addContainerGap())
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
-					.addComponent(container, GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
-					.addContainerGap())
-		);
-		
-		JLabel quizname = new JLabel("Quiz Name");// Jlabel quiz name, change name here is require
-		
-		JLabel question = new JLabel("Questions, you can add whole sentence here");// just pass the string, which you want to be displayed
-		
-		JRadioButton answer1 = new JRadioButton("Answer 1");// add the button text here
-		answer1.addActionListener(this);
-		
-		JRadioButton answer2 = new JRadioButton("Answer 2");
-		answer2.addActionListener(this);
-		
-		JRadioButton answer3 = new JRadioButton("Answer 3");
-		answer3.addActionListener(this);
-		
-		JRadioButton answer4 = new JRadioButton("Answer 4");// if you don't want this button just remove it by commenting these two line
-		answer4.addActionListener(this);
-		
-		JButton previousbutton = new JButton("<<Previous");
-		previousbutton.addActionListener(this);
-		
-		JButton nextbutton = new JButton("Next>>");
-		nextbutton.addActionListener(this);
-		
-		GroupLayout gl_container = new GroupLayout(container);
-		gl_container.setHorizontalGroup(
-			gl_container.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_container.createSequentialGroup()
-					.addGroup(gl_container.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_container.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(quizname, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_container.createSequentialGroup()
-							.addGap(109)
-							.addGroup(gl_container.createParallelGroup(Alignment.LEADING)
-								.addComponent(answer1)
-								.addComponent(answer2)
-								.addComponent(answer3)   //))
-								.addComponent(answer4)))// Commenting this line and remove comment from previous line
-						.addGroup(gl_container.createSequentialGroup()
-							.addGap(38)
-							.addComponent(question, GroupLayout.PREFERRED_SIZE, 362, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_container.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(previousbutton)
-							.addPreferredGap(ComponentPlacement.RELATED, 192, Short.MAX_VALUE)
-							.addComponent(nextbutton)))
-					.addContainerGap())
-		);
-		gl_container.setVerticalGroup(
-			gl_container.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_container.createSequentialGroup()
-					.addGap(31)
-					.addComponent(quizname)
-					.addGap(18)
-					.addComponent(question)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addGroup(gl_container.createParallelGroup(Alignment.TRAILING)
-						.addGroup(gl_container.createSequentialGroup()
-							.addComponent(answer1)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(answer2)
-							.addGap(18)
-							.addComponent(answer3)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(answer4)// comment this line too
-							.addPreferredGap(ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
-							.addComponent(previousbutton))
-						.addGroup(gl_container.createSequentialGroup()
-							.addComponent(nextbutton)
-							.addContainerGap())))
-		);
-		container.setLayout(gl_container);
-		setLayout(groupLayout);
-		*/
 	}
 	
 	public void takeQuiz(User user, Quiz quiz){
+		currentUser = user;
+		currentQuiz = quiz;
 		quizNameHeader.setText(quiz.getName());
-		Question q = quiz.getQuestions().get(0);
-		questionLabel.setText(q.getQuestion());
+		questionPanel.removeAll();
+		
+		questionKeys.clear();
+		for(Question question : quiz.getQuestions()){
+			questionKeys.add(question.getQuestion());
+			questionPanel.add(new AnswerQuestion(question), question.getQuestion());
+		}
+		questionIndex = 0;
+		currentQuestionKey = questionKeys.get(0);
+		questionCardLayout.show(questionPanel, currentQuestionKey);
 		
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) // add every button functionality here
-	{
-		// TODO Auto-generated method stub
-		
+	public void actionPerformed(ActionEvent e) {
+		if(e.getActionCommand() == NEXT_BTN_STR && questionIndex < questionKeys.size() - 1){
+			currentQuestionKey = questionKeys.get(++questionIndex);
+			questionCardLayout.show(questionPanel, currentQuestionKey);
+		}else if(e.getActionCommand() == PREV_BTN_STR && questionIndex > 0){
+			currentQuestionKey = questionKeys.get(--questionIndex);
+			questionCardLayout.show(questionPanel, currentQuestionKey);	
+		}else if(e.getActionCommand() == SUBMIT_BTN_STR){
+			for(Question question : currentQuiz.getQuestions()){
+				boolean selectedAnswer = false;
+				for(Answer answer : question.getAnswers()){
+					if(answer.isSelected()){
+						selectedAnswer = true;
+						break;
+					}
+				}
+				if(!selectedAnswer){
+					JOptionPane.showMessageDialog(this, "You must select an answer for each question.", "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+			}
+			currentUser.submitResult(currentUser.getUsername(), currentQuiz);
+			app.mainMenu();
+		}
 	}
 }

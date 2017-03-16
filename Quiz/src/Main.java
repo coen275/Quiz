@@ -87,7 +87,7 @@ public class Main {
 		tempQuiz.getQuestions().get(tempQuiz.getQuestions().size() - 1).createAnswer("JP", false);
 		tempQuiz.getQuestions().get(tempQuiz.getQuestions().size() - 1).createAnswer("SP", false);
 		
-		course.addQuiz(course.getCourseName());
+		course.addQuiz();
 		
 		
 	}
@@ -125,7 +125,7 @@ public class Main {
 //	}
 	
 	public static void testSignUp(App app) {
-		app.signUp("Xia", "1111", "1111", "student");
+		//app.signUp("Xia", "1111", "1111", "student");
 	}
 
 }

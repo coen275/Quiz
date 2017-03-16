@@ -1,5 +1,6 @@
 // Create Page
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
@@ -15,8 +16,8 @@ import javax.swing.JButton;
 
 public class CreateAccount extends JPanel implements ActionListener {
 	private JTextField usernameTextField;
-	private JTextField passwordTextField;
-	private JTextField confirmPasswordTextField;
+	private JPasswordField passwordTextField;
+	private JPasswordField confirmPasswordTextField;
 
 	private JComboBox accountTypeComboBox;
 	
@@ -60,7 +61,7 @@ public class CreateAccount extends JPanel implements ActionListener {
 		lblPassword.setBounds(46, 113, 64, 16);
 		mainPanel.add(lblPassword);
 		
-		passwordTextField = new JTextField();
+		passwordTextField = new JPasswordField();
 		passwordTextField.setBounds(131, 106, 170, 26);
 		mainPanel.add(passwordTextField);
 		passwordTextField.setColumns(10);
@@ -69,7 +70,7 @@ public class CreateAccount extends JPanel implements ActionListener {
 		lblConfirmPassword.setBounds(0, 153, 114, 16);
 		mainPanel.add(lblConfirmPassword);
 		
-		confirmPasswordTextField = new JTextField();
+		confirmPasswordTextField = new JPasswordField();
 		confirmPasswordTextField.setBounds(131, 144, 170, 26);
 		mainPanel.add(confirmPasswordTextField);
 		confirmPasswordTextField.setColumns(10);
@@ -126,6 +127,7 @@ public class CreateAccount extends JPanel implements ActionListener {
 				errorLabel.setText("Account type not selected");
 			} else {
 				Database.createAccount(username, password, accountType.toLowerCase());
+				accountType = accountType.toLowerCase();
 				if (accountType.equals("student")) {
 					app.setActiveUser(new Student(username, password, accountType));
 				} else if (accountType.equals("teacher")) {

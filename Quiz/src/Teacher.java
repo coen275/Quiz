@@ -9,6 +9,7 @@ public class Teacher extends User {
 
 	@Override
 	public void addCourse(String courseName, String accessCode) {
+		System.out.println("Create Course");
 		if (isCourseExist(courseName)) {
 			System.out.println("Course: " + courseName + " exists!");
 		} else {
