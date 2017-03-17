@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import java.sql.*;
 
 public class Database {
@@ -594,15 +595,12 @@ public class Database {
 		return score;
 	}
 	
-	public static int getTotalScore(int userID, int quizID) {
+	public static int getTotalScore(int quizID) {
 		int score = 0;
 		try{
 			Connection c = instance.createConnection();
 			Statement stmt = c.createStatement();
-			ResultSet rs = stmt.executeQuery(String.format("SELECT COUNT(*) AS score "
-														 + "FROM QuestionResults "
-														 + "JOIN Answers ON Answers.AnswerID = QuestionResults.AnswerID "
-														 + "WHERE UserID = '%d' AND QuizID = '%d';", userID, quizID));
+			ResultSet rs = stmt.executeQuery(String.format("SELECT COUNT(*) AS score FROM Questions WHERE QuizID = '%d';", quizID));
 			if (rs.next()) {
 				score = rs.getInt("score");
 			}
@@ -614,7 +612,7 @@ public class Database {
 	
 	public static void calculateQuizResult(int userID, int quizID) {
 		int score = getScore(userID, quizID);
-		int totalSocre = getTotalScore(userID, quizID);
+		int totalSocre = getTotalScore(quizID);
 		try{
 			Connection c = instance.createConnection();
 			String sql = "INSERT INTO QuizResults (UserID, QuizID, Score, TotalScore)"
