@@ -98,7 +98,7 @@ public class CreateQuiz extends JPanel implements ListSelectionListener, ActionL
 		currentCourse = course;
 		
 		String quizName = (String)JOptionPane.showInputDialog(this, "New Quiz", "Quiz Name",JOptionPane.PLAIN_MESSAGE);
-		if(quizName != null || quizName.length() > 0){
+		if(quizName != null && quizName.length() > 0){
 			tmpQuiz = course.tempQuiz = new Quiz(quizName);
 		}else {
 			app.mainMenu();
