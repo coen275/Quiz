@@ -32,14 +32,17 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 	private JList resultsList;
 
 	private JPanel quizControlPanel;
-	private JLabel courseNameLabel, quizNameLabel, accessCodeLabel, newCourseLabel, resultsLabel;
+	private JLabel courseNameLabel, quizNameLabel, accessCodeLabel;
+	private JLabel lowScoreLabel, highScoreLabel, avgScoreLabel, newCourseLabel, resultsLabel;
 	private JTextField accessCodeTextField;
 	private JTextField courseNameTextField;
 
 	private JButton addCourseButton;
+	private JButton removeCourseButton;
 	private JButton takeQuizButton;
 	private JButton viewResultsButton;
 	private JButton addQuizButton;
+	private JButton removeQuizButton;
 
 	private App app;
 	private User currentUser;
@@ -81,6 +84,8 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 		accessCodeTextField = new JTextField();
 		addCourseButton = new JButton("Add Course");
 		addCourseButton.addActionListener(this);
+		removeCourseButton = new JButton("Remove Course");
+		removeCourseButton.addActionListener(this);
 
 		// Create Course Selection Layout
 		GroupLayout courseSelectionLayout = new GroupLayout(courseSelectionPanel);
@@ -92,7 +97,8 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 						.addComponent(courseNameTextField))
 				.addGroup(courseSelectionLayout.createSequentialGroup().addComponent(accessCodeLabel)
 						.addComponent(accessCodeTextField))
-				.addComponent(addCourseButton));
+				.addComponent(addCourseButton)
+				.addComponent(removeCourseButton));
 
 		courseSelectionLayout.setVerticalGroup(courseSelectionLayout.createSequentialGroup()
 				.addComponent(courseSelectionHeader).addComponent(courseList).addGap(18)
@@ -102,7 +108,8 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 				.addGroup(courseSelectionLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
 						.addComponent(accessCodeLabel).addComponent(accessCodeTextField, GroupLayout.PREFERRED_SIZE,
 								GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-				.addComponent(addCourseButton));
+				.addComponent(addCourseButton)
+				.addComponent(removeCourseButton));
 
 		// Create Quiz Selection Components
 		JPanel quizSelectionPanel = new JPanel();
@@ -116,16 +123,25 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 
 		addQuizButton = new JButton("Add Quiz");
 		addQuizButton.addActionListener(this);
+		removeQuizButton = new JButton("Remove Quiz");
+		removeQuizButton.addActionListener(this);
 
 		// Create Quiz Selection Layout
 		GroupLayout quizSelectionLayout = new GroupLayout(quizSelectionPanel);
 		quizSelectionPanel.setLayout(quizSelectionLayout);
 		quizSelectionLayout.setAutoCreateGaps(true);
 		quizSelectionLayout.setHorizontalGroup(quizSelectionLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
-				.addComponent(quizSelectionHeader).addComponent(quizList).addComponent(addQuizButton));
+				.addComponent(quizSelectionHeader)
+				.addComponent(quizList)
+				.addComponent(addQuizButton)
+				.addComponent(removeQuizButton));
 
 		quizSelectionLayout.setVerticalGroup(quizSelectionLayout.createSequentialGroup()
-				.addComponent(quizSelectionHeader).addComponent(quizList).addGap(18).addComponent(addQuizButton));
+				.addComponent(quizSelectionHeader)
+				.addComponent(quizList)
+				.addGap(18)
+				.addComponent(addQuizButton)
+				.addComponent(removeQuizButton));
 
 		// Create Quiz Control Panel Components
 		quizControlPanel = new JPanel();
@@ -138,6 +154,9 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 		takeQuizButton.addActionListener(this);
 		resultsLabel = new JLabel("");
 		resultsLabel.setFont(subHeaderFont);
+		lowScoreLabel = new JLabel("Low Score");
+		highScoreLabel = new JLabel("High Score");
+		avgScoreLabel = new JLabel("Avg Score");
 		resultsList = new JList();
 		resultsList.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
 
@@ -147,12 +166,24 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 
 		quizControlLayout.setAutoCreateGaps(true);
 		quizControlLayout.setHorizontalGroup(quizControlLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
-				.addComponent(courseNameLabel).addComponent(quizNameLabel).addComponent(takeQuizButton)
-				.addComponent(resultsLabel).addComponent(resultsList));
+				.addComponent(courseNameLabel)
+				.addComponent(quizNameLabel)
+				.addComponent(takeQuizButton)
+				.addComponent(lowScoreLabel)
+				.addComponent(avgScoreLabel)
+				.addComponent(highScoreLabel)
+				.addComponent(resultsLabel)
+				.addComponent(resultsList));
 
-		quizControlLayout.setVerticalGroup(
-				quizControlLayout.createSequentialGroup().addComponent(courseNameLabel).addComponent(quizNameLabel)
-						.addComponent(takeQuizButton).addComponent(resultsLabel).addComponent(resultsList));
+		quizControlLayout.setVerticalGroup(quizControlLayout.createSequentialGroup()
+				.addComponent(courseNameLabel)
+				.addComponent(quizNameLabel)
+				.addComponent(takeQuizButton)
+				.addComponent(lowScoreLabel)
+				.addComponent(avgScoreLabel)
+				.addComponent(highScoreLabel)
+				.addComponent(resultsLabel)
+				.addComponent(resultsList));
 
 		// Create Main panel layout
 
@@ -191,6 +222,9 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 		this.accessCodeTextField.setVisible(!isTeacher);
 		this.accessCodeLabel.setVisible(!isTeacher);
 		this.addQuizButton.setVisible(isTeacher);
+		
+		this.removeQuizButton.setVisible(isTeacher);
+		this.removeCourseButton.setVisible(isTeacher);
 
 		this.revalidate();
 	}
@@ -243,6 +277,25 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 			} else {
 				app.createQuiz(currentCourse);
 			}
+		} else if(src == this.removeCourseButton){
+			if(currentCourse == null){
+				JOptionPane.showMessageDialog(this, "Please select a course.", "Error", JOptionPane.ERROR_MESSAGE);
+			}else{
+				int result = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this course?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
+				if(result == JOptionPane.YES_OPTION){
+					Database.deleteCourse(currentCourse.getCourseName());
+					refreshContent();
+				}
+			}
+		} else if(src == this.removeQuizButton){
+			if(currentQuiz == null){
+				JOptionPane.showMessageDialog(this, "Please select a quiz.", "Error", JOptionPane.ERROR_MESSAGE);
+			}
+			int result = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this quiz?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
+			if(result == JOptionPane.YES_OPTION){
+				currentCourse.deleteQuiz(currentQuiz.getName());
+				refreshContent();
+			}			
 		}
 	}
 
@@ -277,6 +330,9 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 			this.takeQuizButton.setVisible(!isTeacher);
 			this.resultsList.setVisible(isTeacher);
 			this.resultsLabel.setVisible(false);
+			this.lowScoreLabel.setVisible(false);
+			this.avgScoreLabel.setVisible(false);
+			this.highScoreLabel.setVisible(false);
 			if (isTeacher) {
 				List<String> resultLabels = new ArrayList<String>();
 				List<String> users = Database.getQuizTakers(currentCourse.getCourseName(), currentQuiz.getName());
@@ -287,6 +343,13 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 				}
 				if (resultLabels.size() == 0) {
 					resultLabels.add("No students have taken this quiz");
+				}else{
+					this.lowScoreLabel.setVisible(true);
+					this.lowScoreLabel.setText(String.format("Lowest Score %.2f", Database.getLowestScore(currentCourse.getCourseName(), currentQuiz.getName())));
+					this.avgScoreLabel.setVisible(true);
+					this.avgScoreLabel.setText(String.format("Median Score %.2f", Database.getMediumScore(currentCourse.getCourseName(), currentQuiz.getName())));
+					this.highScoreLabel.setVisible(true);
+					this.highScoreLabel.setText(String.format("Highest Score %.2f", Database.getHighestScore(currentCourse.getCourseName(), currentQuiz.getName())));
 				}
 				this.resultsList.setListData(resultLabels.toArray());
 			} else {
