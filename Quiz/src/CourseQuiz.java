@@ -282,8 +282,8 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 				List<String> users = Database.getQuizTakers(currentCourse.getCourseName(), currentQuiz.getName());
 				for (String username : users) {
 					double score = Database.getStudentScore(currentCourse.getCourseName(), currentQuiz.getName(),
-							currentUser.getUsername());
-					resultLabels.add(String.format("%s's Score: %.1f%%", username, score));
+							username);
+					resultLabels.add(String.format("%s's Score: %.2f%%", username, score));
 				}
 				if (resultLabels.size() == 0) {
 					resultLabels.add("No students have taken this quiz");
@@ -295,7 +295,7 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 				if (hasTakenQuiz) {
 					double score = Database.getStudentScore(currentCourse.getCourseName(), currentQuiz.getName(),
 							currentUser.getUsername());
-					this.resultsLabel.setText(String.format("Your Score %.1f%%", score));
+					this.resultsLabel.setText(String.format("Your Score %.2f%%", score));
 				}
 				this.takeQuizButton.setEnabled(!hasTakenQuiz);
 				this.resultsLabel.setVisible(hasTakenQuiz);
