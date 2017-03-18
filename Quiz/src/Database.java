@@ -75,7 +75,7 @@ public class Database {
 					+ "QuizID INT NOT NULL, "
 					+ "Score INT NOT NULL, "
 					+ "TotalScore INT NOT NULL);");
-			
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -106,6 +106,9 @@ public class Database {
 														 + "FROM Users "
 														 + "WHERE Username = '%s' AND Password = '%s';", username, password));
 			result = rs.next();
+			rs.close();
+			stmt.close();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -121,6 +124,9 @@ public class Database {
 														 + "FROM Users "
 														 + "WHERE Username = '%s';", username));
 			result = rs.next();
+			rs.close();
+			stmt.close();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -140,6 +146,9 @@ public class Database {
 			if (rs.next()) {
 				type = rs.getString("Type");
 			}
+			rs.close();
+			stmt.close();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -163,6 +172,7 @@ public class Database {
 			preparedStatement.setString(2, password);
 			preparedStatement.setString(3, type);
 			preparedStatement.executeUpdate(); 
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -184,6 +194,7 @@ public class Database {
 			preparedStatement.setString(1, courseName);
 			preparedStatement.setString(2, accessCode);
 			preparedStatement.executeUpdate(); 
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -197,6 +208,9 @@ public class Database {
 			Statement stmt = c.createStatement();
 			ResultSet rs = stmt.executeQuery(String.format("SELECT * FROM Courses WHERE CourseName = '%s';", courseName));
 			result = rs.next();
+			rs.close();
+			stmt.close();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -210,6 +224,9 @@ public class Database {
 			Statement stmt = c.createStatement();
 			ResultSet rs = stmt.executeQuery(String.format("SELECT * FROM Courses WHERE CourseName = '%s' AND AccessCode = '%s';", courseName, accessCode));
 			result = rs.next();
+			rs.close();
+			stmt.close();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -234,6 +251,7 @@ public class Database {
 			preparedStatement.setString(2, courseName);
 			preparedStatement.setString(3, accessCode);
 			preparedStatement.executeUpdate();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -255,6 +273,7 @@ public class Database {
 			PreparedStatement preparedStatement = c.prepareStatement(sql);
 			preparedStatement.setString(1, courseName);
 			preparedStatement.executeUpdate(); 
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -282,6 +301,9 @@ public class Database {
 			 			 				   loadQuizs(rs.getInt("CourseID")));
 				courses.add(course);
 			}
+			rs.close();
+			stmt.close();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -309,6 +331,9 @@ public class Database {
 				quiz.setQuestions(loadQuestions(rs.getInt("QuizID")));
 				quizs.add(quiz);
 			}
+			rs.close();
+			stmt.close();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -325,6 +350,9 @@ public class Database {
 				Question question = new Question(rs.getString("QuestionText"), rs.getInt("SerialNumber"), getAnswers(rs.getInt("QuestionID")));
 				questions.add(question);
 			}
+			rs.close();
+			stmt.close();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -341,6 +369,9 @@ public class Database {
 				Answer a = new Answer(rs.getInt("AnswerID"), rs.getString("AnswerText"), rs.getBoolean("IsCorrect"));
 				answers.add(a);
 			}
+			rs.close();
+			stmt.close();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -357,13 +388,16 @@ public class Database {
 														 + "JOIN Courses ON Courses.CourseID = Quizs.CourseID "
 														 + "WHERE CourseName = '%s' AND QuizName = '%s';", courseName, quizName));
 			result = rs.next();
+			rs.close();
+			stmt.close();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		return result;
 	}
 	
-	public static Boolean hasTakenQuiz(String userName, String quizName){
+	public static Boolean hasTakenQuiz(String courseName, String userName, String quizName){
 		Boolean result = false;
 		try{
 			Connection c = instance.createConnection();
@@ -372,8 +406,12 @@ public class Database {
 														+ "FROM QuizResults "
 														+ "JOIN Users ON QuizResults.UserID=Users.UserID "
 														+ "JOIN Quizs ON QuizResults.QuizID=Quizs.QuizID "
-														+ "WHERE QuizName='%s' AND Username='%s'", quizName, userName));
+														+ "JOIN Courses ON Courses.CourseID=Quizs.CourseID "
+														+ "WHERE QuizName='%s' AND Username='%s' AND CourseName='%s';", quizName, userName, courseName));
 			result = rs.next();
+			rs.close();
+			stmt.close();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -394,6 +432,9 @@ public class Database {
 			while (rs.next()) {
 				users.add(rs.getString("Username"));
 			}
+			rs.close();
+			stmt.close();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -406,7 +447,6 @@ public class Database {
 	 * @param quiz
 	 */
 	public static void addQuiz(String courseName, Quiz quiz){
-		int n = 1;
 		String quizName = quiz.getName();
 		long accessTime = quiz.getAccessTime();
 		long quizTime = quiz.getQuizTime();
@@ -424,14 +464,13 @@ public class Database {
 			preparedStatement.setLong(3, quizTime);
 			preparedStatement.setString(4, courseName);
 			preparedStatement.executeUpdate();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		
 		for (Question q : questions) {
 			addQuestion(courseName, quizName, q);
-			System.out.println("add question for " + n + "time");
-			n++;
 		}
 	}
 
@@ -454,6 +493,7 @@ public class Database {
 			preparedStatement.setString(4, quizName);
 			preparedStatement.setString(5, courseName);
 			preparedStatement.executeUpdate();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -479,6 +519,7 @@ public class Database {
 			preparedStatement.setInt(4, serialNumber);
 			preparedStatement.setString(5, courseName);
 			preparedStatement.executeUpdate();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -517,6 +558,9 @@ public class Database {
 														 + "JOIN Courses ON Courses.CourseID = Quizs.CourseID "
 														 + "WHERE CourseName = '%s' AND QuizName = '%s';", courseName, quizName));
 			result = rs.next();
+			rs.close();
+			stmt.close();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -535,6 +579,9 @@ public class Database {
 			if (rs.next()) {
 				quizID = rs.getInt("QuizID");
 			}
+			rs.close();
+			stmt.close();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -550,6 +597,9 @@ public class Database {
 			if (rs.next()) {
 				userID = rs.getInt("UserID");
 			}
+			rs.close();
+			stmt.close();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -565,6 +615,9 @@ public class Database {
 			if (rs.next()) {
 				questionID = rs.getInt("QuestionID");
 			}
+			rs.close();
+			stmt.close();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -582,6 +635,7 @@ public class Database {
 			preparedStatement.setInt(3, questionID);
 			preparedStatement.setInt(4, answerID);
 			preparedStatement.executeUpdate();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -600,6 +654,9 @@ public class Database {
 			if (rs.next()) {
 				score = rs.getInt("score");
 			}
+			rs.close();
+			stmt.close();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -615,6 +672,9 @@ public class Database {
 			if (rs.next()) {
 				score = rs.getInt("score");
 			}
+			rs.close();
+			stmt.close();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -634,6 +694,7 @@ public class Database {
 			preparedStatement.setInt(3, score);
 			preparedStatement.setInt(4, totalSocre);
 			preparedStatement.executeUpdate();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -657,6 +718,9 @@ public class Database {
 				totalscore = rs.getInt("TotalScore");
 				result = (double) 100 * score / totalscore;
 			}
+			rs.close();
+			stmt.close();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -683,6 +747,9 @@ public class Database {
 				totalscore = rs.getInt("TotalScore");
 				result = (double) 100 * score / totalscore;
 			}
+			rs.close();
+			stmt.close();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -707,6 +774,9 @@ public class Database {
 				totalscore = rs.getInt("TotalScore");
 				result = (double) 100 * score / totalscore;
 			}
+			rs.close();
+			stmt.close();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -734,6 +804,9 @@ public class Database {
 				totalscore = rs.getInt("TotalScore");
 				result = (double) 100 * score / totalscore;
 			}
+			rs.close();
+			stmt.close();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -753,6 +826,9 @@ public class Database {
 			if (rs.next()) {
 				count = rs.getInt("count");
 			}
+			rs.close();
+			stmt.close();
+			c.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}

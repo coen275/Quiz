@@ -353,7 +353,7 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 				}
 				this.resultsList.setListData(resultLabels.toArray());
 			} else {
-				boolean hasTakenQuiz = Database.hasTakenQuiz(this.currentUser.getUsername(),
+				boolean hasTakenQuiz = Database.hasTakenQuiz(currentCourse.getCourseName(),this.currentUser.getUsername(),
 						this.currentQuiz.getName());
 				if (hasTakenQuiz) {
 					double score = Database.getStudentScore(currentCourse.getCourseName(), currentQuiz.getName(),
