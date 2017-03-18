@@ -146,8 +146,6 @@ public class CreateQuiz extends JPanel implements ListSelectionListener, ActionL
 			}
 		} else if(command == SAVE_BTN_LABEL){
 			currentCourse.addQuiz();
-			tmpQuiz = null;
-//			System.out.println("Add quiz: " + tmpQuiz.getName() + ", in course: " + currentCourse.getCourseName());
 			app.mainMenu();
 		}
 		

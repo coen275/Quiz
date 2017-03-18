@@ -359,6 +359,12 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 					double score = Database.getStudentScore(currentCourse.getCourseName(), currentQuiz.getName(),
 							currentUser.getUsername());
 					this.resultsLabel.setText(String.format("Your Score %.2f%%", score));
+					this.lowScoreLabel.setVisible(true);
+					this.lowScoreLabel.setText(String.format("Lowest Score %.2f", Database.getLowestScore(currentCourse.getCourseName(), currentQuiz.getName())));
+					this.avgScoreLabel.setVisible(true);
+					this.avgScoreLabel.setText(String.format("Median Score %.2f", Database.getMediumScore(currentCourse.getCourseName(), currentQuiz.getName())));
+					this.highScoreLabel.setVisible(true);
+					this.highScoreLabel.setText(String.format("Highest Score %.2f", Database.getHighestScore(currentCourse.getCourseName(), currentQuiz.getName())));
 				}
 				this.takeQuizButton.setEnabled(!hasTakenQuiz);
 				this.resultsLabel.setVisible(hasTakenQuiz);
