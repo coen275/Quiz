@@ -33,6 +33,7 @@ public class Takequiz extends JPanel implements ActionListener{
 	private App app;
 	private Quiz currentQuiz;
 	private User currentUser;
+	private String currentCourseName;
 	
 	private JLabel quizNameHeader;
 	private JPanel questionPanel;
@@ -113,9 +114,10 @@ public class Takequiz extends JPanel implements ActionListener{
 				.addPreferredGap(ComponentPlacement.RELATED, 200, Short.MAX_VALUE));
 	}
 	
-	public void takeQuiz(User user, Quiz quiz){
+	public void takeQuiz(User user, Quiz quiz, String courseName){
 		currentUser = user;
 		currentQuiz = quiz;
+		currentCourseName = courseName;
 		quizNameHeader.setText(quiz.getName());
 		questionPanel.removeAll();
 		
@@ -152,7 +154,7 @@ public class Takequiz extends JPanel implements ActionListener{
 					return;
 				}
 			}
-			currentUser.submitResult(currentUser.getUsername(), currentQuiz);
+			currentUser.submitResult(currentUser.getUsername(), currentQuiz, currentCourseName);
 			app.mainMenu();
 		}
 	}

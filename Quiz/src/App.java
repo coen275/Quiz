@@ -100,9 +100,9 @@ public class App extends JFrame {
 //		currentUser.submitResult(currentUser.getUsername(), selectAnswer(currentUser));
 	}
 	
-	public void takeQuiz(Quiz quiz){
+	public void takeQuiz(Quiz quiz, String courseName){
 		cardLayout.show(currentPanel, TAKE_QUIZ_PANEL);
-		takeQuizPanel.takeQuiz(getActiveUser(), quiz);
+		takeQuizPanel.takeQuiz(getActiveUser(), quiz, courseName);
 	}
 	
 	public void mainMenu(){

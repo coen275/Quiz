@@ -244,7 +244,7 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 		JButton src = (JButton) e.getSource();
 
 		if (src == this.takeQuizButton) {
-			app.takeQuiz(currentQuiz.clone());
+			app.takeQuiz(currentQuiz.clone(), currentCourse.getCourseName());
 		} else if (src == this.viewResultsButton) {
 
 		} else if (src == this.addCourseButton) {

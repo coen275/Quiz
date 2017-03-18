@@ -86,9 +86,9 @@ public abstract class User {
 	}
 	
 	//should be in student class
-	public void submitResult(String username, Quiz quiz) {
+	public void submitResult(String username, Quiz quiz, String courseName) {
 		String quizName = quiz.getName();
-		int quizID = Database.getQuizID(quizName);
+		int quizID = Database.getQuizID(quizName, courseName);
 		int userID = Database.getUserID(username);
 		int answerID, questionID;
 		List<Question> questions = quiz.getQuestions();
