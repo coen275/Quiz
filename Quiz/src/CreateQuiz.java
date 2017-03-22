@@ -30,6 +30,7 @@ public class CreateQuiz extends JPanel implements ListSelectionListener, ActionL
 	private static final String ADD_BTN_LABEL = "Add";
 	private static final String REMOVE_BTN_LABEL = "Remove";
 	private static final String SAVE_BTN_LABEL = "Create Quiz";
+	private static final String BACK_LABEL = "Back";
 	
 	private final Font headerFont = new Font(Font.DIALOG, Font.BOLD, 30);
 	private final Font subHeaderFont = new Font(Font.DIALOG, Font.BOLD, 26);
@@ -60,6 +61,9 @@ public class CreateQuiz extends JPanel implements ListSelectionListener, ActionL
 		JButton createQuizButton = new JButton(SAVE_BTN_LABEL);
 		createQuizButton.addActionListener(this);
 		
+		JButton backToMainButton = new JButton(BACK_LABEL);
+		backToMainButton.addActionListener(this);
+		
 		GroupLayout questionsLayout = new GroupLayout(questionsColumn);
 		questionsColumn.setLayout(questionsLayout);
 		questionsLayout.setAutoCreateGaps(true);
@@ -70,7 +74,8 @@ public class CreateQuiz extends JPanel implements ListSelectionListener, ActionL
 				.addGroup(questionsLayout.createSequentialGroup()
 						.addComponent(addQuestionButton)
 						.addComponent(removeQuestionButton))
-				.addComponent(createQuizButton));
+				.addComponent(createQuizButton)
+				.addComponent(backToMainButton));
 		
 		questionsLayout.setVerticalGroup(questionsLayout.createSequentialGroup()
 				.addComponent(questionsHeader)
@@ -78,7 +83,8 @@ public class CreateQuiz extends JPanel implements ListSelectionListener, ActionL
 				.addGroup(questionsLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
 						.addComponent(addQuestionButton)
 						.addComponent(removeQuestionButton))
-				.addComponent(createQuizButton));
+				.addComponent(createQuizButton)
+				.addComponent(backToMainButton));
 		
 		GroupLayout groupLayout = new GroupLayout(this);
 		setLayout(groupLayout);
@@ -146,6 +152,12 @@ public class CreateQuiz extends JPanel implements ListSelectionListener, ActionL
 			}
 		} else if(command == SAVE_BTN_LABEL){
 			currentCourse.addQuiz();
+			questionList.removeAll();
+			questionsModel.removeAllElements();
+			app.mainMenu();
+		} else if (command == BACK_LABEL) {
+			questionList.removeAll();
+			questionsModel.removeAllElements();
 			app.mainMenu();
 		}
 		

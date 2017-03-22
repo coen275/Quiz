@@ -98,9 +98,13 @@ public class CreateAccount extends JPanel implements ActionListener {
 		mainPanel.add(errorLabel);
 		
 		JButton create = new JButton("Create");
+		JButton cancel = new JButton("Cancel");
 		create.addActionListener(this);
-		create.setBounds(95, 250, 120, 30);
+		cancel.addActionListener(this);
+		create.setBounds(55, 250, 120, 30);
+		cancel.setBounds(190, 250, 120, 30);
 		mainPanel.add(create);
+		mainPanel.add(cancel);
 		
 		
 
@@ -138,6 +142,9 @@ public class CreateAccount extends JPanel implements ActionListener {
 				System.out.printf("%s Account: %s is created", accountType, username);
 				errorLabel.setText("");
 			}
+		}
+		if(actionCommand == "Cancel") {
+			app.setActiveUser(null);
 		}
 	}
 }
