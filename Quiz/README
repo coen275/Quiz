@@ -1,0 +1,17 @@
+	Quiz system application will help teachers easily distribute quizzes or tests to their
+students. Both Teacher and student have to create an account in order to use the program.
+Teachers will be able to create quizzes for each of their classes as well as view the grades of
+each student that took the quiz. Student will be able to access these quizzes and take them.
+Students will need to use an access code that is given to them by the teacher in order to access
+a course and each of the quizzes associated with them.
+
+	This system will be made up of two parts, a java client application and a server backend hosting
+a mySQL database. The same client will be used by both the teacher and the student and will
+provide all the functionality that both roles use. The database will store all account information,
+what courses and quizzes are available along with the questions and answers needed for the
+quizzes themselves.
+
+Dependencies are included in the lib fold
+For running quiz system application, please do following steps:
+1. Setup a MySQL server and change DB properties in Database.java file
+2. Running application from IDE

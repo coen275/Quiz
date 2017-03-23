@@ -1,38 +1,60 @@
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Extract the relevant details and methods of student and teacher
+ * Add/Delete courses
+ * User is about to review results
+ */
 public abstract class User {
-	protected String username;
-	protected String password;
-	protected String type;
-	protected List<Course> courses;
+	protected String username;		//username
+	protected String password;		//password
+	protected String type;			//student or teacher
+	protected List<Course> courses;	//list of courses
 	
+	/**
+	 * Constructor of user to init basic info
+	 * @param username
+	 * @param password
+	 * @param type
+	 */
 	public User(String username, String password, String type){
 		this.username = username;
 		this.password = password;
 		this.type = type;
 		courses = new ArrayList<>(); 
-		
-		//Commented out to prevent NullPointerException
 		loadCourse();
 	}
 	
+	/**
+	 * Get user name
+	 * @return
+	 */
 	public String getUsername() {
 		return username;
 	}
 	
+	/**
+	 * Get password
+	 * @return
+	 */
 	public String getPassword() {
 		return password;
 	}
 	
+	/**
+	 * Get type of user
+	 * @return
+	 */
 	public String getType() {
 		return type;
 	}
 	
-	public void resetPassword(String password) {
-		this.password = password;
-	}
-	
+	/**
+	 * Check if course is existing
+	 * @param name
+	 * @return
+	 */
 	public boolean isCourseExist(String name) {
 		for (Course course : courses) {
 			if (course.getCourseName().equals(name)) {
@@ -42,6 +64,9 @@ public abstract class User {
 		return false;
 	}
 	
+	/**
+	 * Load course information for the current user
+	 */
 	public void loadCourse() {
 		List<Course> list = Database.loadCourses(getUsername());
 		courses.clear();
@@ -50,10 +75,18 @@ public abstract class User {
 		}
 	}
 	
+	/**
+	 * Get the list of courses
+	 * @return
+	 */
 	public List<Course> getCourse() {
 		return courses;
 	}
 	
+	/**
+	 * Get the array of courses
+	 * @return
+	 */
 	public Course[] getCourseArray(){
 		Course[] courseArray = new Course[courses.size()];
 		for(int i = 0; i < courseArray.length; i++){
@@ -62,6 +95,11 @@ public abstract class User {
 		return courseArray;
 	}
 	
+	/**
+	 * Check if access code is valid
+	 * @param s
+	 * @return
+	 */
 	public static boolean isValidCode(String s) {
 		boolean isValid = true;
 		if (s.length() == 4) {
@@ -76,6 +114,10 @@ public abstract class User {
 		return isValid;
 	}
 	
+	/**
+	 * Delete the course based on the course name
+	 * @param courseName
+	 */
 	public void deleteCourse(String courseName) {
 		for (Course c : courses) {
 			if (c.getCourseName().equals(courseName) && c.getQuizs().size() <= 0) {
@@ -86,7 +128,12 @@ public abstract class User {
 		}
 	}
 	
-	//should be in student class
+	/**
+	 * Student submit the quiz result
+	 * @param username
+	 * @param quiz
+	 * @param courseName
+	 */
 	public void submitResult(String username, Quiz quiz, String courseName) {
 		String quizName = quiz.getName();
 		int quizID = Database.getQuizID(quizName, courseName);
@@ -105,15 +152,20 @@ public abstract class User {
 		calculateQuizResult(userID, quizID);
 	}
 	
-	//should be in student class
+	/**
+	 * Calculate the quiz result
+	 * @param userID
+	 * @param quizID
+	 */
 	public void calculateQuizResult(int userID, int quizID) {
 		Database.calculateQuizResult(userID, quizID);
 	}
 	
-	public void printUserInfo(){
-		System.out.println("Username: " + username + ", Password: " + password + ", Type: " + type);
-	}
-	
+	/**
+	 * Add/Enroll the course
+	 * @param courseName
+	 * @param accessCode
+	 */
 	public abstract void addCourse(String courseName, String accessCode);
 	
 }

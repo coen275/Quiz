@@ -1,13 +1,24 @@
 import java.util.ArrayList;
-import java.util.List;
 
+/**
+ * Student concrete class
+ *
+ */
 public class Student extends User {
 
+	/**
+	 * Constructor
+	 * @param username
+	 * @param password
+	 * @param type
+	 */
 	public Student(String username, String password, String type) {
 		super(username, password, type);
-		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * Enroll in the course with access code
+	 */
 	@Override
 	public void addCourse(String courseName, String accessCode) {
 		if (isCourseExist(courseName)) {
@@ -21,5 +32,4 @@ public class Student extends User {
 			}
 		}
 	}
-	
 }

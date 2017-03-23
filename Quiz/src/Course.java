@@ -1,51 +1,62 @@
 import java.util.List;
-
+/**
+ * Course contains list of quizzes created by teachers
+ * Both students and teachers are able to check the quizzes
+ * from each course.
+ */
 public class Course {
-	String name;
-	String accessCode;
-	Quiz tempQuiz;
-	List<Quiz> quizs;
+	String name;			//course name
+	String accessCode;		//access code for registration
+	Quiz tempQuiz;			//temporary quiz object 
+	List<Quiz> quizs;		//list of quizzes
 	
-	public Course(String name, String accessCode, List<Quiz> quiz) {
+	/**
+	 * Course constructor includes basic course information
+	 * @param name	course name
+	 * @param accessCode	access code for enrollment
+	 * @param quizs	list of quizzes
+	 */
+	public Course(String name, String accessCode, List<Quiz> quizs) {
 		this.name = name;
 		this.accessCode = accessCode;
-		this.quizs = quiz;
+		this.quizs = quizs;
 	}
 	
+	/**
+	 * Set course name
+	 * @param name	course name
+	 */
 	public void setCourseName(String name) {
 		this.name = name;
 	} 
 	
+	/**
+	 * Get course name
+	 * @return
+	 */
 	public String getCourseName() {
 		return name;
 	}
 	
+	/**
+	 * Set access code for course
+	 * @param accessCode	access code
+	 */
 	public void setAccessCode(String accessCode) {
 		this.accessCode = accessCode;
 	}
 	
+	/**
+	 * Get access code
+	 * @return
+	 */
 	public String getAccessCode() {
 		return accessCode;
 	}
 	
 	/**
-	 * Create an temp quiz object
-	 */
-	public void createQuiz() {
-		tempQuiz = new Quiz();
-	}
-	
-	public Quiz getTempQuiz(){
-		return tempQuiz;
-	}
-	
-	/**
-	 * Add details to tempQuiz object when click finish button
-	 * @param name
-	 * @param accessTime
-	 * @param quizTime
-	 * @param answers
-	 * @param questions
+	 * Create Quiz and add records into database
+	 * Then clear the information in temp quiz object
 	 */
 	public void addQuiz() {
 		quizs.add(tempQuiz);
@@ -54,16 +65,17 @@ public class Course {
 	}
 	
 	/**
-	 * remove the temp quiz object when click cancel button
+	 * Get the list of quizzes
+	 * @return	list of quizzes
 	 */
-	public void cancelQuiz() {
-		tempQuiz = null;
-	}
-	
 	public List<Quiz> getQuizs() {
 		return quizs;
 	}
 	
+	/**
+	 * Delete quiz and its questions and answers
+	 * @param quizName	quiz name
+	 */
 	public void deleteQuiz(String quizName) {
 		for (Quiz q : quizs) {
 			boolean isQuizTaken = Database.isQuizTaken(name, q.getName());
@@ -74,11 +86,7 @@ public class Course {
 			}
 		}
 	}
-	
-	public void printCourseInfo(){
-		System.out.println("CourseName: " + name + ", AccessCode: " + accessCode);
-	}
-	
+
 	@Override
 	public String toString(){
 		return String.format("%s (%s)", this.name, this.accessCode);

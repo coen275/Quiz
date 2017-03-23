@@ -1,10 +1,14 @@
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Question is created by teacher and contains multiple choices
+ *
+ */
 public class Question implements Cloneable {
-	private String question;
-	private int serialNumber;
-	private List<Answer> answers;
+	private String question;		//question text
+	private int serialNumber;		//distinguish the questions with same text 
+	private List<Answer> answers;	//list of choices
 	
 	public Question(String question, int serialNumber) {
 		this.question = question;
@@ -18,39 +22,66 @@ public class Question implements Cloneable {
 		this.answers = answers;
 	}
 	
+	/**
+	 * Add answer
+	 * @param answer
+	 */
 	public void addAnswer(Answer answer){
 		answers.add(answer);
 	}
 	
+	/**
+	 * Remove the answer
+	 * @param answer
+	 */
 	public void removeAnswer(Answer answer){
 		answers.remove(answer);
 	}
 	
-	public void createAnswer(String answerText, boolean isCorrect) {
-		Answer answer = new Answer(answerText, isCorrect);
-		answers.add(answer);
-	}
-	
+	/**
+	 * Set the serial number
+	 * @param serialNumber
+	 */
 	public void setSerialNumber(int serialNumber) {
 		this.serialNumber = serialNumber;
 	}
 	
+	/**
+	 * Set the question text
+	 * @param question
+	 */
 	public void setQuestionText(String question) {
 		this.question = question;
 	}
 
+	/**
+	 * Set the list of answers
+	 * @param answers
+	 */
 	public void setAnswer(List<Answer> answers) {
 		this.answers = answers;
 	}
 	
+	/**
+	 * Get the question text
+	 * @return
+	 */
 	public String getQuestion() {
 		return question;
 	}
 	
+	/**
+	 * Get the list of answers
+	 * @return
+	 */
 	public List<Answer> getAnswers() {
 		return answers;
 	}
 	
+	/**
+	 * Get answer array
+	 * @return
+	 */
 	public Answer[] getAnswersArray(){
 		Answer[] answersArray = new Answer[answers.size()];
 		for(int i = 0; i < answersArray.length; i++){
@@ -59,17 +90,17 @@ public class Question implements Cloneable {
 		return answersArray;
 	}
 	
+	/**
+	 * Get the serial number
+	 * @return
+	 */
 	public int getSerialNumber() {
 		return serialNumber;
 	}
 	
-	public void printQuestionInfo(){
-		System.out.println("Question Text: " + getQuestion() + ", SerialNumber: " + serialNumber);
-		for (Answer a: answers){
-			a.printAnswerInfo();
-		}
-	}
-	
+	/**
+	 * Clone the question
+	 */
 	public Question clone(){
 		Question question = new Question(this.question, this.serialNumber);
 		List<Answer> answerList = new ArrayList<Answer>();

@@ -1,19 +1,24 @@
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import java.sql.*;
 
+/**
+ * Connect to MySQL database and do queries by the application
+ */
 public class Database {
 
-	private static Database instance = new Database();
+	private static Database instance = new Database();	//create db instance
 	
+	//set up db properties
 	private static final String URL = "jdbc:mysql://45.55.27.137:3306/quiz_system?useSSL=false";
 	private static final String USER = "coen_sql";
 	private static final String PASSWORD = "coenSqlSecret24";
 	private static final String DRIVER_CLASS = "com.mysql.jdbc.Driver";
+	
+	/**
+	 * Constructor of database
+	 */
 	private Database() {
 		try{
 			Class.forName(DRIVER_CLASS);
@@ -23,6 +28,9 @@ public class Database {
 		initializeDatabase();
 	}
 	
+	/**
+	 * Initialize the database, create the tables if they are not existing
+	 */
 	private void initializeDatabase(){
 		try{
 			Connection c = createConnection();
@@ -81,6 +89,10 @@ public class Database {
 		}
 	}
 	
+	/**
+	 * Create DB connection
+	 * @return
+	 */
 	private Connection createConnection(){
 		Connection connection = null;
 		try{
@@ -115,6 +127,11 @@ public class Database {
 		return result;
 	}
 	
+	/**
+	 * Check if username is existing in DB
+	 * @param username
+	 * @return
+	 */
 	public static Boolean isUserExist(String username) {
 		Boolean result = false;
 		try{
@@ -201,6 +218,11 @@ public class Database {
 		addCourse(username, courseName, accessCode);
 	}
 	
+	/**
+	 * Check if Course is existing in DB
+	 * @param courseName
+	 * @return
+	 */
 	public static Boolean isCourseExist(String courseName) {
 		Boolean result = false;
 		try{
@@ -217,6 +239,12 @@ public class Database {
 		return result;
 	}
 	
+	/**
+	 * Check if the access code of course is matched.
+	 * @param courseName
+	 * @param accessCode
+	 * @return
+	 */
 	public static Boolean isAccessCodeCorrect(String courseName, String accessCode) {
 		Boolean result = false;
 		try{
@@ -327,7 +355,6 @@ public class Database {
 				quiz.setAccessTime(rs.getLong("AccessTime"));
 				quiz.setName(rs.getString("QuizName"));
 				quiz.setQuizTime(rs.getLong("QuizTime"));
-//				System.out.println("QuizName: " + quiz.getName() + ", AccessTime: " + quiz.getAccessTime() + ", QuizTime: " + quiz.getQuizTime());
 				quiz.setQuestions(loadQuestions(rs.getInt("QuizID")));
 				quizs.add(quiz);
 			}
@@ -340,6 +367,11 @@ public class Database {
 		return quizs;
 	}
 	
+	/**
+	 * Get the list of questions objects
+	 * @param quizID
+	 * @return
+	 */
 	public static List<Question> loadQuestions(int quizID){
 		List<Question> questions = new ArrayList<>();
 		try{
@@ -359,6 +391,11 @@ public class Database {
 		return questions;
 	}
 	
+	/**
+	 * Get the list of answers
+	 * @param questionID
+	 * @return
+	 */
 	public static List<Answer> getAnswers(int questionID) {
 		List<Answer> answers = new ArrayList<>();
 		try{
@@ -378,6 +415,12 @@ public class Database {
 		return answers;
 	}
 	
+	/**
+	 * Check if quiz is existing 
+	 * @param courseName
+	 * @param quizName
+	 * @return
+	 */
 	public static Boolean isQuizExist(String courseName, String quizName){
 		Boolean result = false;
 		try{
@@ -397,6 +440,13 @@ public class Database {
 		return result;
 	}
 	
+	/**
+	 * Check if any student has taken this quiz
+	 * @param courseName
+	 * @param userName
+	 * @param quizName
+	 * @return
+	 */
 	public static Boolean hasTakenQuiz(String courseName, String userName, String quizName){
 		Boolean result = false;
 		try{
@@ -418,6 +468,9 @@ public class Database {
 		return result;
 	}
 	
+	/**
+	 * Get the list of usernames who have taken the quiz
+	 */
 	public static List<String> getQuizTakers(String courseName, String quizName){
 		List<String> users = new ArrayList<String>();
 		try{
@@ -474,6 +527,12 @@ public class Database {
 		}
 	}
 
+	/**
+	 * Add quiz related records into database
+	 * @param courseName
+	 * @param quizName
+	 * @param q
+	 */
 	private static void addQuestion(String courseName, String quizName, Question q) {
 		int quizID = getQuizID(quizName, courseName);
 		String questionText = q.getQuestion();
@@ -503,6 +562,14 @@ public class Database {
 		}
 	}
 	
+	/**
+	 * Add answer related records into database
+	 * @param courseName
+	 * @param quizName
+	 * @param serialNumber
+	 * @param answerText
+	 * @param isCorrect
+	 */
 	private static void addAnswer(String courseName, String quizName, int serialNumber, String answerText, boolean isCorrect) {
 		try{
 			Connection c = instance.createConnection();
@@ -547,6 +614,12 @@ public class Database {
 		}
 	}
 	
+	/**
+	 * Check if quiz is taken by any student
+	 * @param courseName
+	 * @param quizName
+	 * @return
+	 */
 	public static Boolean isQuizTaken(String courseName, String quizName) {
 		Boolean result = false;
 		try{
@@ -569,6 +642,12 @@ public class Database {
 		return result;
 	}
 	
+	/**
+	 * Get the quiz ID
+	 * @param quizName
+	 * @param courseName
+	 * @return
+	 */
 	public static int getQuizID(String quizName, String courseName) {
 		int quizID = 0;
 		try{
@@ -590,6 +669,11 @@ public class Database {
 		return quizID;
 	}
 	
+	/**
+	 * Get the user ID
+	 * @param username
+	 * @return
+	 */
 	public static int getUserID(String username) {
 		int userID = 0;
 		try{
@@ -608,6 +692,11 @@ public class Database {
 		return userID;
 	}
 	
+	/**
+	 * Get the question ID
+	 * @param answerID
+	 * @return
+	 */
 	public static int getQuestionID(int answerID) {
 		int questionID = 0;
 		try{
@@ -626,6 +715,13 @@ public class Database {
 		return questionID;
 	}
 	
+	/**
+	 * Add students' choices into database
+	 * @param userID
+	 * @param quizID
+	 * @param questionID
+	 * @param answerID
+	 */
 	public static void addQuestionResult(int userID, int quizID, int questionID, int answerID){
 		try{
 			Connection c = instance.createConnection();
@@ -644,6 +740,12 @@ public class Database {
 		
 	}
 	
+	/**
+	 * Get the student's score
+	 * @param userID
+	 * @param quizID
+	 * @return
+	 */
 	public static int getScore(int userID, int quizID) {
 		int score = 0;
 		try{
@@ -665,6 +767,11 @@ public class Database {
 		return score;
 	}
 	
+	/**
+	 * Get the total score of the quiz
+	 * @param quizID
+	 * @return
+	 */
 	public static int getTotalScore(int quizID) {
 		int score = 0;
 		try{
@@ -683,6 +790,11 @@ public class Database {
 		return score;
 	}
 	
+	/**
+	 * Calculate the student total score
+	 * @param userID
+	 * @param quizID
+	 */
 	public static void calculateQuizResult(int userID, int quizID) {
 		int score = getScore(userID, quizID);
 		int totalSocre = getTotalScore(quizID);
@@ -701,7 +813,14 @@ public class Database {
 			e.printStackTrace();
 		}
 	}
-
+	
+	/**
+	 * Get the student's score in percentage
+	 * @param courseName
+	 * @param quizName
+	 * @param username
+	 * @return
+	 */
 	public static Double getStudentScore(String courseName, String quizName, String username) {
 		int score = 0;
 		int totalscore = 0;
@@ -729,8 +848,12 @@ public class Database {
 		return result;
 	}
 	
-	
-	
+	/**
+	 * Get the highest score in the quiz
+	 * @param courseName
+	 * @param quizName
+	 * @return
+	 */
 	public static Double getHighestScore(String courseName, String quizName) {
 		int score = 0;
 		int totalscore = 0;
@@ -758,6 +881,12 @@ public class Database {
 		return result;
 	}
 	
+	/**
+	 * Get the lowest score in the quiz
+	 * @param courseName
+	 * @param quizName
+	 * @return
+	 */
 	public static Double getLowestScore(String courseName, String quizName) {
 		int score = 0;
 		int totalscore = 0;
@@ -785,6 +914,12 @@ public class Database {
 		return result;
 	}
 	
+	/**
+	 * Get the medium score in the quiz
+	 * @param courseName
+	 * @param quizName
+	 * @return
+	 */
 	public static Double getMediumScore(String courseName, String quizName) {
 		int score = 0;
 		int totalscore = 0;
@@ -815,6 +950,12 @@ public class Database {
 		return result;
 	}
 	
+	/**
+	 * Get the number of rows
+	 * @param courseName
+	 * @param quizName
+	 * @return
+	 */
 	private static Integer getNumberOfRows(String courseName, String quizName) {
 		int count = 0;
 		try{

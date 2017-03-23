@@ -1,19 +1,25 @@
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Quiz includes questions and specific attributes 
+ *
+ */
 public class Quiz implements Cloneable {
-	private String name;
-	private long accessTime;
-	private long quizTime;
-	private List<Question> questions;
-	private int serialNumber;
+	private String name;				//quiz name
+	private long accessTime;			//access time
+	private long quizTime;				//quiz time
+	private List<Question> questions;	//list of questions
+	private int serialNumber;			//serial number
 	
+	/**
+	 * Constructor of quiz with empty question and serial number
+	 */
 	public Quiz() {
 		questions = new ArrayList<>();
-		serialNumber = 1;
+		serialNumber = 0;
 	}
 	
 	/**
@@ -25,47 +31,90 @@ public class Quiz implements Cloneable {
 		this.questions = new ArrayList<Question>();
 	}
 
+	/**
+	 * Get quiz name
+	 * @return
+	 */
 	public String getName() {
 		return name;
 	}
 	
+	/**
+	 * Get access time
+	 * @return
+	 */
 	public long getAccessTime() {
 		return accessTime;
 	}
 	
+	/**
+	 * Get quiz time
+	 * @return
+	 */
 	public long getQuizTime() {
 		return quizTime;
 	}
 	
+	/**
+	 * Get list of question objects
+	 * @return
+	 */
 	public List<Question> getQuestions() {
 		return questions;
 	}
 	
+	/**
+	 * Set quiz name
+	 * @param name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 	
+	/**
+	 * Set access time
+	 * @param accessTime
+	 */
 	public void setAccessTime(long accessTime) {
 		this.accessTime = accessTime;
 	}
 	
+	/**
+	 * Set Quiz Time
+	 * @param quizTime
+	 */
 	public void setQuizTime(long quizTime) {
 		this.quizTime = quizTime;
 	}
 	
-	
+	/**
+	 * Set list of questions
+	 * @param questions
+	 */
 	public void setQuestions(List<Question> questions) {
 		this.questions = questions;
 	}
 	
+	/**
+	 * Add question into list
+	 * @param question
+	 */
 	public void addQuestion(Question question){
 		this.questions.add(question);
 	}
 	
+	/**
+	 * Remove the question from the list
+	 * @param question
+	 */
 	public void removeQuestion(Question question){
 		this.questions.remove(question);
 	}
 	
+	/**
+	 * Remove question from the list based on serial number
+	 * @param serialNumber
+	 */
 	public void removeQuestion(int serialNumber){
 		for(Question question : this.questions){
 			if(question.getSerialNumber() == serialNumber){
@@ -76,53 +125,8 @@ public class Quiz implements Cloneable {
 	}
 	
 	/**
-	 * WARN: Have to think how to pass the params
+	 * Clone the quiz object
 	 */
-	public void createQuestion(String question){
-		Question q = new Question(question, serialNumber);
-		questions.add(q);
-		serialNumber++;
-	}
-	
-	/**
-	 * Remove question. Index starts from 0.
-	 * @param index
-	 */
-	public void deleteQuestion(int index) {
-		questions.remove(index);
-	}
-	
-	/**
-	 * Print Access Time, Change it as needed
-	 */
-	public void printAccessTime() {
-		Date time=new Date((long)accessTime * 1000);
-		System.out.println("AccessTime: " + time);
-	}
-	
-	/**
-	 * Print Quiz Time, Change it as needed
-	 */
-	public void printQuizTime(){
-		long hours = TimeUnit.MILLISECONDS.toHours(quizTime);
-		quizTime -= TimeUnit.HOURS.toMillis(hours);
-	    long minutes = TimeUnit.MILLISECONDS.toMinutes(quizTime);
-	    quizTime -= TimeUnit.MINUTES.toMillis(minutes);
-	    long seconds = TimeUnit.MILLISECONDS.toSeconds(quizTime);
-	    StringBuilder sb = new StringBuilder(64);
-	    sb.append(minutes);
-	    sb.append(" Minutes ");
-	    sb.append(seconds);
-	    sb.append(" Seconds");
-	    System.out.println("QuizTime:" + sb.toString());
-	}
-	
-	public void printQuizInfo(){
-		System.out.println("QuizName: " + name);
-		printAccessTime();
-		printQuizTime();
-	}
-	
 	public Quiz clone(){
 		Quiz quiz = new Quiz(this.name);
 		quiz.setAccessTime(this.accessTime);

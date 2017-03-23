@@ -1,12 +1,22 @@
-import java.util.List;
-
+/**
+ * Teacher concrete class
+ *
+ */
 public class Teacher extends User {
 
+	/**
+	 * Constructor
+	 * @param username
+	 * @param password
+	 * @param type
+	 */
 	public Teacher(String username, String password, String type) {
 		super(username, password, type);
-		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * Create the course
+	 */
 	@Override
 	public void addCourse(String courseName, String accessCode) {
 		System.out.println("Create Course");
