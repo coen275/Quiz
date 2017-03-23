@@ -143,14 +143,39 @@ public class CreateQuiz extends JPanel implements ListSelectionListener, ActionL
 				tmpQuiz.addQuestion(question);
 			}
 		} else if(command == REMOVE_BTN_LABEL){
+			
 			Object selectedValue = questionList.getSelectedValue();
 			if(selectedValue == null){
 				JOptionPane.showMessageDialog(this, "Please select a question to remove.", "Error", JOptionPane.ERROR_MESSAGE);
-			}else{
+			}else{	
 				questionsModel.removeElement(questionList.getSelectedValue());
-				tmpQuiz.removeQuestion((Question)questionList.getSelectedValue());
+			
+				Question selectedQuestion = (Question)selectedValue;
+				tmpQuiz.removeQuestion(selectedQuestion.getSerialNumber());
 			}
 		} else if(command == SAVE_BTN_LABEL){
+			if(tmpQuiz.getQuestions().size() == 0){
+				JOptionPane.showMessageDialog(this, "You must have atleast one question per quiz.", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+			for(Question question : tmpQuiz.getQuestions()){
+				if(question.getAnswers().size() == 0){
+					JOptionPane.showMessageDialog(this, "All questions must have atleast one answer.", "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				int correctAnswerCount = 0;
+				for(Answer answer : question.getAnswers()){
+					if(answer.getStatus()){
+						correctAnswerCount++;	
+					}
+				}
+				if(correctAnswerCount != 1){
+					JOptionPane.showMessageDialog(this, "All questions must have exactly one correct answer.", "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+			}
+			
 			currentCourse.addQuiz();
 			questionList.removeAll();
 			questionsModel.removeAllElements();

@@ -66,6 +66,15 @@ public class Quiz implements Cloneable {
 		this.questions.remove(question);
 	}
 	
+	public void removeQuestion(int serialNumber){
+		for(Question question : this.questions){
+			if(question.getSerialNumber() == serialNumber){
+				this.questions.remove(question);
+				break;
+			}
+		}
+	}
+	
 	/**
 	 * WARN: Have to think how to pass the params
 	 */

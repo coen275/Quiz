@@ -552,12 +552,14 @@ public class Database {
 		try{
 			Connection c = instance.createConnection();
 			Statement stmt = c.createStatement();
-			ResultSet rs = stmt.executeQuery(String.format("SELECT COUNT(*) "
+			ResultSet rs = stmt.executeQuery(String.format("SELECT COUNT(*) AS count "
 														 + "FROM QuizResults "
 														 + "JOIN Quizs ON Quizs.QuizID = QuizResults.QuizID "
 														 + "JOIN Courses ON Courses.CourseID = Quizs.CourseID "
 														 + "WHERE CourseName = '%s' AND QuizName = '%s';", courseName, quizName));
-			result = rs.next();
+			if(rs.next()){
+				result = rs.getInt("count") != 0;
+			}
 			rs.close();
 			stmt.close();
 			c.close();

@@ -288,8 +288,8 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 								JOptionPane.ERROR_MESSAGE);
 					}else{
 						currentUser.deleteCourse(currentCourse.getCourseName());
+						refreshContent();
 					}
-					refreshContent();
 				}
 			}
 		} else if(src == this.removeQuizButton){
@@ -298,8 +298,14 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 			}
 			int result = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this quiz?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
 			if(result == JOptionPane.YES_OPTION){
-				currentCourse.deleteQuiz(currentQuiz.getName());
-				refreshContent();
+				boolean isQuizTaken = Database.isQuizTaken(currentCourse.getCourseName(), currentQuiz.getName());
+				if(isQuizTaken){
+					JOptionPane.showMessageDialog(this, "You cannot delete a quiz once students have taken it.", "Error",
+							JOptionPane.ERROR_MESSAGE);
+				}else{
+					currentCourse.deleteQuiz(currentQuiz.getName());
+					refreshContent();
+				}
 			}			
 		}
 	}

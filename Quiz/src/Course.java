@@ -68,9 +68,11 @@ public class Course {
 	
 	public void deleteQuiz(String quizName) {
 		for (Quiz q : quizs) {
-			if (q.getName().equals(quizName) && !Database.isQuizTaken(name, q.getName())) {
+			boolean isQuizTaken = Database.isQuizTaken(name, q.getName());
+			if (q.getName().equals(quizName) && !isQuizTaken) {
 				Database.deleteQuiz(this.name, q.getName());
 				quizs.remove(q);
+				break;
 			}
 		}
 	}
