@@ -283,7 +283,12 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 			}else{
 				int result = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this course?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
 				if(result == JOptionPane.YES_OPTION){
-					Database.deleteCourse(currentCourse.getCourseName());
+					if(currentCourse.getQuizs().size() > 0){
+						JOptionPane.showMessageDialog(this, "You cannot delete a course with quizzes attached to it.", "Error",
+								JOptionPane.ERROR_MESSAGE);
+					}else{
+						currentUser.deleteCourse(currentCourse.getCourseName());
+					}
 					refreshContent();
 				}
 			}

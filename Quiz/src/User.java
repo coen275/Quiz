@@ -81,6 +81,7 @@ public abstract class User {
 			if (c.getCourseName().equals(courseName) && c.getQuizs().size() <= 0) {
 				courses.remove(c);
 				Database.deleteCourse(courseName);
+				break;
 			}
 		}
 	}
