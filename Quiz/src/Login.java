@@ -1,6 +1,7 @@
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import java.awt.Color;
@@ -70,7 +71,8 @@ public class Login extends JPanel implements ActionListener {
 	}
 	
 	private void setErrorMessage(String msg){
-		errorLabel.setText(msg);
+		//errorLabel.setText(msg);
+		JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.ERROR_MESSAGE);
 	}
 	
 	private void clearErrorMessage(){
