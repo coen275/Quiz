@@ -1,33 +1,34 @@
 //package experiement_swing;
 
-import javax.swing.JPanel;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.GroupLayout.Group;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JRadioButton;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.ListModel;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+package UI;
 
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
-import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SwingConstants;
+
+import Models.Quiz;
+import Models.User;
+import Models.Answer;
+import Models.Question;
+
+//The GUI Panel to let the user take a quiz
 public class Takequiz extends JPanel implements ActionListener{
 	
 	private App app;
@@ -50,6 +51,7 @@ public class Takequiz extends JPanel implements ActionListener{
 	private static final String NEXT_BTN_STR = "Next Question";
 	private static final String SUBMIT_BTN_STR = "Submit Answers";
 	
+	//A custom renderer to display the lists
 	private class ListRenderer extends DefaultListCellRenderer {
 		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 		        JRadioButton button = new JRadioButton(value.toString());
@@ -114,6 +116,7 @@ public class Takequiz extends JPanel implements ActionListener{
 				.addPreferredGap(ComponentPlacement.RELATED, 200, Short.MAX_VALUE));
 	}
 	
+	//Setup the panel to display the quiz
 	public void takeQuiz(User user, Quiz quiz, String courseName){
 		currentUser = user;
 		currentQuiz = quiz;
@@ -131,7 +134,8 @@ public class Takequiz extends JPanel implements ActionListener{
 		questionCardLayout.show(questionPanel, currentQuestionKey);
 		
 	}
-
+	
+	//Handle button presses
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand() == NEXT_BTN_STR && questionIndex < questionKeys.size() - 1){

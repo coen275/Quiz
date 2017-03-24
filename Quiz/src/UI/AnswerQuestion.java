@@ -1,3 +1,5 @@
+package UI;
+
 import java.awt.Component;
 import java.awt.Font;
 
@@ -12,6 +14,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import Models.Question;
+import Models.Answer;
 
 public class AnswerQuestion extends JPanel implements ListSelectionListener {
 

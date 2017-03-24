@@ -1,4 +1,9 @@
+package Models;
+
 import java.util.List;
+
+import Server.Database;
+import Models.Quiz;
 /**
  * Course contains list of quizzes created by teachers
  * Both students and teachers are able to check the quizzes
@@ -20,6 +25,13 @@ public class Course {
 		this.name = name;
 		this.accessCode = accessCode;
 		this.quizs = quizs;
+	}
+	
+	/*
+	 * Set the temp quiz
+	 */	
+	public void setTmpQuiz(Quiz quiz){
+		this.tempQuiz = quiz;
 	}
 	
 	/**

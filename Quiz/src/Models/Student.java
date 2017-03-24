@@ -1,4 +1,8 @@
+package Models;
+
 import java.util.ArrayList;
+
+import Server.Database;
 
 /**
  * Student concrete class

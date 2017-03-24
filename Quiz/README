@@ -12,6 +12,21 @@ what courses and quizzes are available along with the questions and answers need
 quizzes themselves.
 
 Dependencies are included in the lib fold
-For running quiz system application, please do following steps:
-1. Setup a MySQL server and change DB properties in Database.java file
-2. Running application from IDE
+
+Instructions
+
+The program should run without any additional setup.
+
+You may use your own MySQL database (you will need to modify settings in Database.java)
+OR
+You may use the current database, which is hosted remotely and does not need additional setup
+
+You may create your own student and teacher accounts to use the app, but demo accounts have been provided.
+
+Student Account
+	Username: Demo_Student
+	Password: abcd
+
+Teacher Account
+	Username: Demo_Teacher
+	Password: abcd

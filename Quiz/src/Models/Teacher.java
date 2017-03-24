@@ -1,3 +1,7 @@
+package Models;
+
+import Server.Database;
+
 /**
  * Teacher concrete class
  *

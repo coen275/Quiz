@@ -1,11 +1,24 @@
-import java.util.Map;
+package UI;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JToolBar;
 
+import Models.User;
+import Models.Course;
+import Models.Quiz;
+
+@SuppressWarnings("serial")
 public class App extends JFrame {
 	
 	private User currentUser;
@@ -17,8 +30,6 @@ public class App extends JFrame {
 	private JPanel currentPanel;
 
 	private CardLayout cardLayout;
-	
-	private Map<String, JPanel> panels;
 	
 	private CourseQuiz courseQuiz;
 	private Takequiz takeQuizPanel;
@@ -44,7 +55,7 @@ public class App extends JFrame {
 		//Create signout button
 		signoutButton = new JButton(new AbstractAction("Sign Out"){
 			public void actionPerformed(ActionEvent arg0) {
-				logout();	
+				setActiveUser(null);	
 			}			
 		});
 		signoutButton.setEnabled(false);
@@ -84,9 +95,10 @@ public class App extends JFrame {
 		setVisible(true);
 	}
 	
+	//Set the currently logged in user. Set to null when signing out
 	public void setActiveUser(User user){
 		currentUser = user;
-		userNameLabel.setText(user != null ? user.username : NOT_SIGNED_IN_MSG);
+		userNameLabel.setText(user != null ? user.getUsername() : NOT_SIGNED_IN_MSG);
 		signoutButton.setEnabled(user != null);
 		if(currentUser == null){
 			cardLayout.show(currentPanel, LOGIN_PANEL);		
@@ -96,33 +108,35 @@ public class App extends JFrame {
 		revalidate();
 	}
 	
+	//Open up the TakeQuiz page
 	public void takeQuiz(Quiz quiz, String courseName){
 		cardLayout.show(currentPanel, TAKE_QUIZ_PANEL);
 		takeQuizPanel.takeQuiz(getActiveUser(), quiz, courseName);
 	}
 	
+	//Open up the main menu
 	public void mainMenu(){
 		cardLayout.show(currentPanel, SELECT_QUIZ_PANEL);
 		courseQuiz.refreshContent();
 	}
 	
+	//Open up the create quiz page
 	public void createQuiz(Course course){
 		cardLayout.show(currentPanel, CREATE_QUIZ_PANEL);
 		createQuizPanel.setCourse(course);
 	}
 	
+	//Access the current user
 	public User getActiveUser(){
 		return currentUser;
 	}
 	
+	//Open the create account page
 	public void createAccount(){
 		setPanel(CREATE_ACCOUNT_PANEL);
 	}
 	
-	public void logout() {
-		setActiveUser(null);
-	}
-	
+	//Set the current panel
 	private void setPanel(String key){
 		cardLayout.show(currentPanel, key);
 		revalidate();

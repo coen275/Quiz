@@ -1,11 +1,11 @@
+package UI;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
@@ -15,11 +15,12 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.LayoutStyle.ComponentPlacement;
 
+import Models.Answer;
+import Models.Question;
+
+//The GUI panel to create a question
 public class CreateQuestion extends JPanel implements ActionListener {
 
 	private Question question;
@@ -38,6 +39,7 @@ public class CreateQuestion extends JPanel implements ActionListener {
 	private static final String ADD_BTN_LABEL = "Add";
 	private static final String REMOVE_BTN_LABEL = "Remove";
 	
+	//A custom renderer to display the answer list
 	private class ListRenderer extends DefaultListCellRenderer {
 		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 			JLabel label = (JLabel)super.getListCellRendererComponent(list,value,index,isSelected,cellHasFocus);
@@ -51,6 +53,7 @@ public class CreateQuestion extends JPanel implements ActionListener {
 	    }
 	}
 	
+	//Constructor
 	public CreateQuestion(CreateQuiz createQuizPanel, Question question){
 		
 		this.createQuizPanel = createQuizPanel;
@@ -112,6 +115,7 @@ public class CreateQuestion extends JPanel implements ActionListener {
 				.addComponent(answerIsCorrectBox));
 	}
 
+	//The button press handler
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();

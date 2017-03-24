@@ -1,19 +1,25 @@
-// Create Page
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.SpringLayout;
-import javax.swing.SwingConstants;
-import javax.swing.JComboBox;
-import java.awt.event.ActionListener;
+package UI;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
-import javax.swing.JButton;
+import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
+import Server.Database;
+import Models.Student;
+import Models.Teacher;
+
+//The GUI panel to create an account
 public class CreateAccount extends JPanel implements ActionListener {
 	private JTextField usernameTextField;
 	private JPasswordField passwordTextField;
@@ -77,15 +83,6 @@ public class CreateAccount extends JPanel implements ActionListener {
 		
 		String[] component= {"Select","Teacher","Student"} ;
 		accountTypeComboBox = new JComboBox(component);
-		/*comboBox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(e.getSource()==comboBox){
-					JComboBox cBox =(JComboBox)e.getSource();	
-					String msg= (String)cBox.getSelectedItem();
-					
-				}
-			}
-		});*/
 		accountTypeComboBox.setMaximumRowCount(3);
 		accountTypeComboBox.setToolTipText("");
 		accountTypeComboBox.setBounds(131, 180, 170, 26);
@@ -105,11 +102,9 @@ public class CreateAccount extends JPanel implements ActionListener {
 		cancel.setBounds(190, 250, 120, 30);
 		mainPanel.add(create);
 		mainPanel.add(cancel);
-		
-		
-
 	}
 
+	//Handle button presses
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub

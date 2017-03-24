@@ -1,4 +1,5 @@
-import java.awt.Color;
+package UI;
+
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -15,6 +16,13 @@ import javax.swing.JPanel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import Models.Quiz;
+import Server.Database;
+import Models.Course;
+import Models.Question;
+import Models.Answer;
+
+//The GUI panel to create a quiz
 public class CreateQuiz extends JPanel implements ListSelectionListener, ActionListener {
 	
 	private App app;
@@ -35,6 +43,7 @@ public class CreateQuiz extends JPanel implements ListSelectionListener, ActionL
 	private final Font headerFont = new Font(Font.DIALOG, Font.BOLD, 30);
 	private final Font subHeaderFont = new Font(Font.DIALOG, Font.BOLD, 26);
 	
+	//Constructor
 	public CreateQuiz(App app) {
 		this.app = app;
 		serialNumber = 0;
@@ -100,21 +109,20 @@ public class CreateQuiz extends JPanel implements ListSelectionListener, ActionL
 				.addComponent(questionPanel));
 	}
 	
+	//Sets the course that this quiz will be made for
 	public void setCourse(Course course){
 		currentCourse = course;
 		
 		String quizName = (String)JOptionPane.showInputDialog(this, "New Quiz", "Quiz Name",JOptionPane.PLAIN_MESSAGE);
 		if(quizName != null && quizName.length() > 0){
-			tmpQuiz = course.tempQuiz = new Quiz(quizName);
+			tmpQuiz = new Quiz(quizName);
+			course.setTmpQuiz(tmpQuiz);
 		}else {
 			app.mainMenu();
 		}		
 	}
-	
-	public void refresh(){
-		revalidate();
-	}
 
+	//Handles list selection event
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		if(e.getValueIsAdjusting()){
@@ -131,6 +139,7 @@ public class CreateQuiz extends JPanel implements ListSelectionListener, ActionL
 		revalidate();
 	}
 
+	//Handles button presses
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();
@@ -184,8 +193,6 @@ public class CreateQuiz extends JPanel implements ListSelectionListener, ActionL
 			questionList.removeAll();
 			questionsModel.removeAllElements();
 			app.mainMenu();
-		}
-		
+		}	
 	}
-
 }

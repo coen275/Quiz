@@ -1,5 +1,10 @@
+package Models;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import Server.Database;
+import Models.Course;
 
 /**
  * Extract the relevant details and methods of student and teacher

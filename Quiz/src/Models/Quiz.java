@@ -1,7 +1,7 @@
+package Models;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Quiz includes questions and specific attributes 

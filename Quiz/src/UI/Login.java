@@ -1,17 +1,21 @@
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
+package UI;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 
+import Server.Database;
+import Models.Teacher;
+import Models.Student;
+
+//The GUI panel to allow the user to login
 public class Login extends JPanel implements ActionListener {
 	private JTextField usernameTextField;
 	private JPasswordField passwordTextField;
@@ -70,15 +74,18 @@ public class Login extends JPanel implements ActionListener {
 
 	}
 	
+	//Display an error message
 	private void setErrorMessage(String msg){
 		//errorLabel.setText(msg);
 		JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.ERROR_MESSAGE);
 	}
 	
+	//Clear the error message label
 	private void clearErrorMessage(){
 		errorLabel.setText("");
 	}
 
+	//Handle the button presses
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
@@ -110,5 +117,4 @@ public class Login extends JPanel implements ActionListener {
 			app.createAccount();
 		}
 	}
-
 }

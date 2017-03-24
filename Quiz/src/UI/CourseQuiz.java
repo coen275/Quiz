@@ -1,31 +1,34 @@
+package UI;
 
-//package experiement_swing;
-
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.DefaultListSelectionModel;
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListSelectionModel;
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import Models.Quiz;
+import Models.User;
+import Models.Course;
+
+import Server.Database;
+
+@SuppressWarnings({"serial", "rawtypes"})
 public class CourseQuiz extends JPanel implements ActionListener, ListSelectionListener {
 	private JList courseList;
 	private JList quizList;
@@ -52,19 +55,18 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 	private final Font headerFont = new Font(Font.DIALOG, Font.BOLD, 30);
 	private final Font subHeaderFont = new Font(Font.DIALOG, Font.BOLD, 24);
 
+	//A Custom Renderer for the JLists
 	private class ListRenderer extends DefaultListCellRenderer {
-		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
-				boolean cellHasFocus) {
+		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 			JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 			Font font = new Font("Ariel", Font.PLAIN, 20);
 			label.setFont(font);
 			return label;
 		}
 	}
-
-	/**
-	 * Create the panel.
-	 */
+	
+	//Constructor
+	@SuppressWarnings("unchecked")
 	public CourseQuiz(App app) {
 		this.app = app;
 
@@ -186,7 +188,6 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 				.addComponent(resultsList));
 
 		// Create Main panel layout
-
 		JSeparator s1 = new JSeparator(SwingConstants.VERTICAL), s2 = new JSeparator(SwingConstants.VERTICAL);
 
 		GroupLayout panelLayout = new GroupLayout(this);
@@ -207,6 +208,7 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 				.addComponent(quizControlPanel));
 	}
 
+	//Refresh the page and update the displayed data
 	public void refreshContent() {
 		currentUser = app.getActiveUser();
 		currentUser.loadCourse();
@@ -229,6 +231,7 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 		this.revalidate();
 	}
 
+	//Get an array of the quiz names in a course
 	private String[] getQuizNames(Course course) {
 		List<Quiz> quizzes = course.getQuizs();
 		String[] quizNames = new String[quizzes.size()];
@@ -238,9 +241,9 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 		return quizNames;
 	}
 
+	//Handle button presses
 	@Override
-	public void actionPerformed(ActionEvent e) // add buttons functionality here
-	{
+	public void actionPerformed(ActionEvent e) {
 		JButton src = (JButton) e.getSource();
 
 		if (src == this.takeQuizButton) {
@@ -248,7 +251,7 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 		} else if (src == this.viewResultsButton) {
 
 		} else if (src == this.addCourseButton) {
-			if (currentUser.type.equals("teacher")) {
+			if (currentUser.getType().equals("teacher")) {
 				String courseName = (String) JOptionPane.showInputDialog(this, "Course Name: ", "Add Course",
 						JOptionPane.PLAIN_MESSAGE);
 				if (courseName != null && courseName.length() > 0) {
@@ -310,6 +313,7 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 		}
 	}
 
+	//Handle when a list item is selected
 	@Override
 	public void valueChanged(ListSelectionEvent arg0) {
 		if (arg0.getValueIsAdjusting())
@@ -380,7 +384,7 @@ public class CourseQuiz extends JPanel implements ActionListener, ListSelectionL
 				this.takeQuizButton.setEnabled(!hasTakenQuiz);
 				this.resultsLabel.setVisible(hasTakenQuiz);
 			}
-			this.courseNameLabel.setText(currentCourse.name);
+			this.courseNameLabel.setText(currentCourse.getCourseName());
 			this.quizNameLabel.setText(currentQuiz.getName());
 			this.revalidate();
 		}
